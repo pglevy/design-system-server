@@ -35,10 +35,25 @@ export const designSystemData: DesignSystemData = {
     }
   },
   layouts: {
+    'columns-layout': { 
+      title: 'Columns Layout (Layouts)',
+      body: 'Displays any number of columns alongside each other. On narrow screens and mobile devices, columns are stacked.',
+      url: 'https://gist.github.com/f6002a59956f4ab71b3fe024b6b97628'
+    },
     'empty-states': { 
       title: 'Empty States (Layouts)',
       body: 'Empty states provide feedback when no data is available for display in a view.',
       url: 'https://gist.github.com/41b571829dc4436bae4ee6dcd6c04840'
+    },
+    'side-by-side-layout': { 
+      title: 'Side By Side (Layouts)',
+      body: 'Displays components alongside each other.',
+      url: 'https://gist.github.com/e815dd924b782184f0c2051e85b9d09a'
+    },
+    'pane-layout': { 
+      title: 'Pane Layout (Layouts)',
+      body: 'Displays two or three vertical panes, each with independent scrolling.',
+      url: 'https://gist.github.com/8319885d36fefbcfbf2324c2a80ec495'
     }
   },
   patterns: {
