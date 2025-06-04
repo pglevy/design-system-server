@@ -1,39 +1,82 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { designSystemData, DesignSystemItem } from "./design-system-data.js";
+import { designSystemData, DesignSystemItem, GITHUB_CONFIG } from "./design-system-data.js";
 
-// Helper function to extract Gist ID from GitHub URL
-function extractGistId(url: string): string {
-  const parts = url.split('/');
-  return parts[parts.length - 1];
+// Interface for parsed markdown content
+interface ParsedMarkdown {
+  frontmatter: Record<string, any>;
+  content: string;
+  designSection: string;
+  developmentSection: string;
 }
 
-// Helper function to fetch Gist content
-async function fetchGistContent(gistId: string): Promise<{ guidance: string; code: string } | null> {
+// Helper function to parse frontmatter from markdown
+function parseFrontmatter(content: string): ParsedMarkdown {
+  const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
+  const match = content.match(frontmatterRegex);
+  
+  let frontmatter = {};
+  let markdownContent = content;
+  
+  if (match) {
+    const frontmatterText = match[1];
+    markdownContent = match[2];
+    
+    // Parse YAML-like frontmatter
+    frontmatterText.split('\n').forEach(line => {
+      const colonIndex = line.indexOf(':');
+      if (colonIndex > 0) {
+        const key = line.substring(0, colonIndex).trim();
+        let value = line.substring(colonIndex + 1).trim();
+        
+        // Remove quotes if present
+        if ((value.startsWith('"') && value.endsWith('"')) || 
+            (value.startsWith("'") && value.endsWith("'"))) {
+          value = value.slice(1, -1);
+        }
+        
+        (frontmatter as any)[key] = value;
+      }
+    });
+  }
+  
+  // Extract Design and Development sections
+  const designMatch = markdownContent.match(/## Design\n([\s\S]*?)(?=## Development|$)/);
+  const developmentMatch = markdownContent.match(/## Development\n([\s\S]*?)$/);
+  
+  return {
+    frontmatter,
+    content: markdownContent,
+    designSection: designMatch ? designMatch[1].trim() : '',
+    developmentSection: developmentMatch ? developmentMatch[1].trim() : ''
+  };
+}
+
+// Helper function to fetch content from GitHub repository
+async function fetchRepoContent(filePath: string): Promise<ParsedMarkdown | null> {
   try {
-    const response = await fetch(`https://api.github.com/gists/${gistId}`);
+    const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${filePath}`;
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `token ${GITHUB_CONFIG.token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'design-system-mcp-server'
+      }
+    });
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
     const data = await response.json();
-    const files = data.files;
     
-    let guidance = '';
-    let code = '';
+    // GitHub API returns base64 encoded content
+    const content = atob(data.content);
     
-    for (const filename in files) {
-      if (filename.toLowerCase().includes('guidance')) {
-        guidance = files[filename].content;
-      } else if (filename.toLowerCase().includes('code')) {
-        code = files[filename].content;
-      }
-    }
-    
-    return { guidance, code };
+    return parseFrontmatter(content);
   } catch (error) {
-    console.error("Error fetching Gist content:", error);
+    console.error(`Error fetching repo content for ${filePath}:`, error);
     return null;
   }
 }
@@ -137,25 +180,50 @@ server.tool(
     
     const component = categoryData[normalizedComponentName] as DesignSystemItem;
     
-    const gistId = extractGistId(component.url);
-    const gistContent = await fetchGistContent(gistId);
+    const repoContent = await fetchRepoContent(component.filePath);
     
-    if (!gistContent) {
+    if (!repoContent) {
       return {
         content: [
           {
             type: "text",
-            text: `Failed to fetch details for ${component.title}.\n\nBasic information:\n${component.body}\n\nGist URL: ${component.url}`,
+            text: `Failed to fetch details for ${component.title}.\n\nBasic information:\n${component.body}\n\nFile path: ${component.filePath}`,
           },
         ],
       };
+    }
+    
+    let response = `# ${component.title}\n\n${component.body}\n\n`;
+    
+    // Add frontmatter info if available
+    if (Object.keys(repoContent.frontmatter).length > 0) {
+      response += `**Status:** ${repoContent.frontmatter.status || 'Unknown'}\n`;
+      if (repoContent.frontmatter.last_updated) {
+        response += `**Last Updated:** ${repoContent.frontmatter.last_updated}\n`;
+      }
+      response += '\n';
+    }
+    
+    // Add Design section
+    if (repoContent.designSection) {
+      response += `## Design\n\n${repoContent.designSection}\n\n`;
+    }
+    
+    // Add Development section
+    if (repoContent.developmentSection) {
+      response += `## Development\n\n${repoContent.developmentSection}`;
+    }
+    
+    // If no sections found, show full content
+    if (!repoContent.designSection && !repoContent.developmentSection) {
+      response += `## Content\n\n${repoContent.content}`;
     }
     
     return {
       content: [
         {
           type: "text",
-          text: `# ${component.title}\n\n${component.body}\n\n## Guidance\n\n${gistContent.guidance}\n\n## Code Example\n\n${gistContent.code}`,
+          text: response,
         },
       ],
     };

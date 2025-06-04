@@ -101,6 +101,8 @@ A centralized, developer-accessible design system documentation platform that ma
 
 Private repo: https://github.com/pglevy/design-system-docs
 
+PAT: See the `.env` file.
+
 We'll organize all design system documentation in a dedicated, GitHub repository with a structure like:
 
 ```
