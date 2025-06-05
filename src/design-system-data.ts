@@ -2,7 +2,7 @@
 export interface DesignSystemItem {
   title: string;
   body: string;
-  url: string;
+  filePath: string;
 }
 
 export interface DesignSystemCategory {
@@ -10,62 +10,198 @@ export interface DesignSystemCategory {
 }
 
 export interface DesignSystemData {
-  components: DesignSystemCategory;
+  branding: DesignSystemCategory;
+  'content-style-guide': DesignSystemCategory;
+  accessibility: DesignSystemCategory;
   layouts: DesignSystemCategory;
   patterns: DesignSystemCategory;
+  components: DesignSystemCategory;
   [key: string]: DesignSystemCategory;
 }
 
+// GitHub repository configuration
+export const GITHUB_CONFIG = {
+  owner: 'pglevy',
+  repo: 'design-system-docs',
+  token: process.env.GITHUB_TOKEN || ''
+};
+
 export const designSystemData: DesignSystemData = {
-  components: {
-    'breadcrumbs': { 
-      title: 'Breadcrumbs (Components)',
-      body: 'Breadcrumbs are a navigation aid that help users understand where they are in the application hierarchy.',
-      url: 'https://gist.github.com/d06a1535eb4bfd34113a9068fd64f641'
+  branding: {
+    'logo-and-favicon': {
+      title: 'Logo and Favicon',
+      body: 'Guidelines for using logos and favicons consistently across applications.',
+      filePath: 'branding/logo-and-favicon.md'
     },
-    'cards': { 
-      title: 'Cards (Components)',
-      body: 'Cards are containers that display content and actions on a single topic.',
-      url: 'https://gist.github.com/2a3696b0d394b2fbb169a0161ca1dcee'
+    'colors': {
+      title: 'Colors',
+      body: 'Color palette and usage guidelines for the design system.',
+      filePath: 'branding/colors.md'
     },
-    'more-less-link': { 
-      title: 'More/Less Link (Components)',
-      body: 'More/Less links allow users to expand or collapse content sections.',
-      url: 'https://gist.github.com/a405696ea1876eb423454e4a80729cbd'
+    'icons': {
+      title: 'Icons',
+      body: 'Icon library and usage guidelines.',
+      filePath: 'branding/icons.md'
+    },
+    'typography': {
+      title: 'Typography',
+      body: 'Typography scale, fonts, and text styling guidelines.',
+      filePath: 'branding/typography.md'
+    },
+    'approach-to-ai': {
+      title: 'Approach to AI',
+      body: 'Guidelines for incorporating AI elements in design.',
+      filePath: 'branding/approach-to-ai.md'
+    }
+  },
+  'content-style-guide': {
+    'voice-and-tone': {
+      title: 'Voice and Tone',
+      body: 'Guidelines for consistent voice and tone across content.',
+      filePath: 'content-style-guide/voice-and-tone.md'
+    },
+    'dictionary': {
+      title: 'Dictionary',
+      body: 'Terminology and language standards.',
+      filePath: 'content-style-guide/dictionary.md'
+    }
+  },
+  accessibility: {
+    'checklist': {
+      title: 'Accessibility Checklist',
+      body: 'Comprehensive checklist for ensuring accessible design and development.',
+      filePath: 'accessibility/checklist.md'
     }
   },
   layouts: {
-    'columns-layout': { 
-      title: 'Columns Layout (Layouts)',
-      body: 'Displays any number of columns alongside each other. On narrow screens and mobile devices, columns are stacked.',
-      url: 'https://gist.github.com/f6002a59956f4ab71b3fe024b6b97628'
+    'dashboards': {
+      title: 'Dashboards',
+      body: 'Layout patterns for dashboard interfaces.',
+      filePath: 'layouts/dashboards.md'
     },
-    'empty-states': { 
-      title: 'Empty States (Layouts)',
-      body: 'Empty states provide feedback when no data is available for display in a view.',
-      url: 'https://gist.github.com/41b571829dc4436bae4ee6dcd6c04840'
+    'empty-states': {
+      title: 'Empty States',
+      body: 'Layout guidance for empty state screens.',
+      filePath: 'layouts/empty-states.md'
     },
-    'side-by-side-layout': { 
-      title: 'Side By Side (Layouts)',
-      body: 'Displays components alongside each other.',
-      url: 'https://gist.github.com/e815dd924b782184f0c2051e85b9d09a'
+    'forms': {
+      title: 'Forms',
+      body: 'Form layout patterns and best practices.',
+      filePath: 'layouts/forms.md'
     },
-    'pane-layout': { 
-      title: 'Pane Layout (Layouts)',
-      body: 'Displays two or three vertical panes, each with independent scrolling.',
-      url: 'https://gist.github.com/8319885d36fefbcfbf2324c2a80ec495'
+    'grids': {
+      title: 'Grids',
+      body: 'Grid system and layout structures.',
+      filePath: 'layouts/grids.md'
+    },
+    'landing-pages': {
+      title: 'Landing Pages',
+      body: 'Layout patterns for landing and marketing pages.',
+      filePath: 'layouts/landing-pages.md'
+    },
+    'messaging-module': {
+      title: 'Messaging Module',
+      body: 'Layout for messaging and communication interfaces.',
+      filePath: 'layouts/messaging-module.md'
+    },
+    'pane-layouts': {
+      title: 'Pane Layouts',
+      body: 'Multi-pane layout patterns for complex interfaces.',
+      filePath: 'layouts/pane-layouts.md'
+    },
+    'portals': {
+      title: 'Portals',
+      body: 'Portal and hub page layout patterns.',
+      filePath: 'layouts/portals.md'
+    },
+    'record-views': {
+      title: 'Record Views',
+      body: 'Layout patterns for viewing and editing records.',
+      filePath: 'layouts/record-views.md'
     }
   },
   patterns: {
-    'banners': { 
-      title: 'Banners (Patterns)',
-      body: 'Banners provide users with important information that may affect their experience.',
-      url: 'https://gist.github.com/49bfc97a5314081a03912ed277449605'
+    'banners': {
+      title: 'Banners',
+      body: 'Banner patterns for important announcements and alerts.',
+      filePath: 'patterns/banners.md'
     },
-    'notifications': { 
-      title: 'Notifications (Patterns)',
-      body: 'Notifications provide users with timely information about events or changes in the system.',
-      url: 'https://gist.github.com/4df12bb673b7e1c1b56f364bcadacdea'
+    'calendar-widget': {
+      title: 'Calendar Widget',
+      body: 'Calendar interface patterns and interactions.',
+      filePath: 'patterns/calendar-widget.md'
+    },
+    'charts': {
+      title: 'Charts',
+      body: 'Data visualization and chart patterns.',
+      filePath: 'patterns/charts.md'
+    },
+    'comment-thread': {
+      title: 'Comment Thread',
+      body: 'Comment and discussion thread patterns.',
+      filePath: 'patterns/comment-thread.md'
+    },
+    'document-summary': {
+      title: 'Document Summary',
+      body: 'Document summary and preview patterns.',
+      filePath: 'patterns/document-summary.md'
+    },
+    'document-cards': {
+      title: 'Document Cards',
+      body: 'Card patterns for displaying document information.',
+      filePath: 'patterns/document-cards.md'
+    },
+    'inline-dialog': {
+      title: 'Inline Dialog',
+      body: 'Inline dialog and contextual popup patterns.',
+      filePath: 'patterns/inline-dialog.md'
+    },
+    'key-performance-indicators': {
+      title: 'Key Performance Indicators',
+      body: 'KPI display and dashboard patterns.',
+      filePath: 'patterns/key-performance-indicators.md'
+    },
+    'notifications': {
+      title: 'Notifications',
+      body: 'Notification patterns for system messages and alerts.',
+      filePath: 'patterns/notifications.md'
+    },
+    'pick-list': {
+      title: 'Pick List',
+      body: 'Selection and pick list interface patterns.',
+      filePath: 'patterns/pick-list.md'
+    }
+  },
+  components: {
+    'breadcrumbs': {
+      title: 'Breadcrumbs',
+      body: 'Navigation breadcrumb components for showing hierarchy.',
+      filePath: 'components/breadcrumbs.md'
+    },
+    'cards': {
+      title: 'Cards',
+      body: 'Card components for displaying grouped content.',
+      filePath: 'components/cards.md'
+    },
+    'confirmation-dialog': {
+      title: 'Confirmation Dialog',
+      body: 'Modal dialog components for confirmations.',
+      filePath: 'components/confirmation-dialog.md'
+    },
+    'milestones': {
+      title: 'Milestones',
+      body: 'Milestone and progress indicator components.',
+      filePath: 'components/milestones.md'
+    },
+    'more-less-link': {
+      title: 'More / Less Link',
+      body: 'Expandable content toggle components.',
+      filePath: 'components/more-less-link.md'
+    },
+    'tabs': {
+      title: 'Tabs',
+      body: 'Tabbed interface components for organizing content.',
+      filePath: 'components/tabs.md'
     }
   }
 };

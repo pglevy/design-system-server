@@ -1,0 +1,45 @@
+- Home
+- About
+  - Release Notes
+  - Prioritizing UI Designs
+  - Our Solutions
+  - Inspiration
+- Branding
+  - Logo and Favicon
+  - Colors
+  - Icons
+  - Typography
+  - Approach to AI
+- Content Style Guide
+  - Voice and Tone
+  - Dictionary
+- Accessibility
+  - Checklist
+- Layouts
+  - Dashboards
+  - Empty States
+  - Forms
+  - Grids
+  - Landing Pages
+  - Messaging Module
+  - Pane Layouts
+  - Portals
+  - Record Views
+- Patterns
+  - Banners
+  - Calendar Widget
+  - Charts
+  - Comment Thread
+  - Document Summary
+  - Document Cards
+  - Inline Dialog
+  - Key Performance Indicators
+  - Notifications
+  - Pick List
+- Components
+  - Breadcrumbs
+  - Cards
+  - Confirmation Dialog
+  - Milestones
+  - More / Less Link
+  - Tabs
