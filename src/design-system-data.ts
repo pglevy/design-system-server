@@ -23,7 +23,7 @@ export interface DesignSystemData {
 export const GITHUB_CONFIG = {
   owner: 'pglevy',
   repo: 'design-system-docs',
-  token: 'REDACTED_TOKEN'
+  token: process.env.GITHUB_TOKEN || ''
 };
 
 export const designSystemData: DesignSystemData = {
