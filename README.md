@@ -21,6 +21,8 @@ This is a Model Context Protocol (MCP) server that provides access to design sys
    npm run build
    ```
 
+See [Getting Started](GETTING_STARTED.md) for more detailed instructions on setting up to use with Amazon Q.
+
 ## Usage with Claude Desktop
 
 1. Make sure you have Claude Desktop installed and up to date

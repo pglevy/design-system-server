@@ -1,0 +1,179 @@
+# Getting Started with the Design System MCP Server
+
+This guide will help you set up the Design System MCP Server to work with Amazon Q chat. This tool allows you to query design system components, patterns, and layouts directly through conversational AI.
+
+## What You'll Need
+
+- Access to our AWS account
+- VS Code (recommended)
+- Node.js installed on your machine
+
+### More on Node.js
+
+Check if it's installed by opening the Terminal app and running this command to see the version: `node -v`.
+
+If you get a "command not found" message, go to the [Node.js download page](https://nodejs.org/en/download) to get it. You can use the selection tool to run the installation from the command line or the download the binary and run it from your machine.
+
+Pick the current LTS (long-term support) version of Node.
+
+The command line tool will have you pick a node version manager and node package manager. Unless you have a preference for something else, use `nvm` and `npm`.
+
+## Step 1: Install Amazon Q Chat
+
+> [!IMPORTANT]
+> During installation, sign in with the `Use with Pro license` option.
+
+1. Visit the Amazon Q chat installation page using this start URL: [Amazon Q Developer](https://aws.amazon.com/q/developer/)
+2. Click "Get Started" and follow the installation instructions for your operating system
+3. Once installed, you can access Amazon Q through the terminal command line by typing `q chat`
+
+## Step 2: Download This Project
+
+You have two options to get the project files:
+
+### Option A: Download ZIP (Easier)
+1. Go to the project's GitHub page
+2. Click the green "Code" button
+3. Select "Download ZIP"
+4. Extract the ZIP file to your Desktop or preferred location
+
+### Option B: Clone with Git (If you're comfortable with Git)
+1. Open Terminal (Mac) or Command Prompt (Windows)
+2. Navigate to where you want the project: `cd Desktop`
+3. Run: `git clone [repository-url]`
+
+## Step 3: Install the Project
+
+1. Open Terminal (Mac) or Command Prompt (Windows)
+2. Navigate to the project folder, for example:
+   ```
+   cd Desktop/design-system-server
+   ```
+3. Install the required dependencies:
+   ```
+   npm install
+   ```
+4. Build the project:
+   ```
+   npm run build
+   ```
+
+## Step 4: Set Up GitHub Access
+
+The MCP server needs access to GitHub to fetch the design system documentation. You'll need to create a Personal Access Token with access to only the specific design system repository.
+
+1. **Create a GitHub Personal Access Token:**
+   - Go to [GitHub Settings > Developer settings > Personal access tokens > Fine-grained tokens](https://github.com/settings/personal-access-tokens/new)
+   - Click "Generate new token"
+   - Give it a descriptive name like "Design System MCP Server"
+   - Set expiration to your preference (90 days is recommended)
+   - **Resource owner:** Select "appian" from the dropdown
+   - **Repository access:** Select "Selected repositories" and choose the design system documentation repository
+   - **Repository permissions:** Expand this section and set:
+     - **Contents:** Read (this allows reading files from the repository)
+     - **Metadata:** Read (this is automatically selected and required)
+   - Leave all other permissions as "No access"
+   - Click "Generate token"
+   - **Important:** Copy the token immediately - you won't be able to see it again!
+
+2. **Create a .env file:**
+   - In the design-system-server folder, create a new file called `.env`
+   - Add this line to the file (replace `your_token_here` with your actual token):
+     ```
+     GITHUB_TOKEN=your_token_here
+     ```
+   - Save the file
+
+3. **Rebuild the project:**
+   ```
+   npm run build
+   ```
+
+## Step 5: Configure Amazon Q
+
+Now you need to tell Amazon Q where to find this design system server.
+
+1. **Find your configuration file location:**
+   - **Mac:** `~/.config/amazonq/mcp_config.json`
+   - **Windows:** `%USERPROFILE%\.config\amazonq\mcp_config.json`
+
+2. **Get the full path to your project:**
+   - In Terminal/Command Prompt, while in the project folder, run:
+     ```
+     pwd
+     ```
+   - Copy the full path that appears (it will look something like `/Users/yourname/Desktop/design-system-server`)
+
+3. **Edit the configuration file:**
+   - Open the config file in VS Code or any text editor
+   - If the file or directory doesn't exist, create it
+   - Add this configuration (replace `YOUR_FULL_PATH_HERE` with the path you copied):
+
+   ```json
+   {
+       "mcpServers": {
+           "design-system": {
+               "command": "node",
+               "args": [
+                   "YOUR_FULL_PATH_HERE/build/index.js"
+               ]
+           }
+       }
+   }
+   ```
+
+4. **Save the file and restart Amazon Q**
+
+## Step 6: Set Up Your Working Project
+
+Now that the MCP server is configured, you'll want to create a separate workspace for your design system work. This is where you'll generate and organize files before copying them into Interface Designer.
+
+1. **Create a new project folder:**
+   - Create a new folder on your Desktop called something like `design-system-work` or `my-design-project`
+   - This folder will be separate from the MCP server folder you downloaded earlier
+
+2. **Open your working folder in VS Code:**
+   - Launch VS Code
+   - Go to File → Open Folder
+   - Select your new working project folder
+   - This gives you a clean workspace for your design system files
+
+3. **Understanding the workflow:**
+   - You'll use Amazon Q chat to query the design system and generate component code
+   - Amazon Q will provide you with SAIL code snippets
+   - You can save these snippets as files in your VS Code project for reference
+   - When ready, you'll copy and paste the final code into Interface Designer
+
+4. **Organize your workspace:**
+   - Consider creating folders like:
+     - `components/` - for individual component files
+     - `layouts/` - for layout patterns
+     - `examples/` - for code examples and variations
+     - `notes/` - for design decisions and documentation
+
+## Step 7: Test It Out
+
+1. Open Amazon Q chat (type `q chat` in Terminal)
+2. Try asking questions like:
+   - "What design system categories are available?"
+   - "Show me all components in the components category"
+   - "Search the design system for buttons"
+
+## Troubleshooting
+
+**If Amazon Q can't find the server:**
+- Double-check that the path in your config file is correct and absolute (starts with `/` on Mac or `C:\` on Windows)
+- Make sure you ran `npm run build` successfully
+- Restart Amazon Q completely
+
+**If npm commands don't work:**
+- Install Node.js from [nodejs.org](https://nodejs.org)
+- Restart your Terminal/Command Prompt after installation
+
+**Need help?**
+- Check the main README.md file for more detailed troubleshooting
+- The configuration file path must be the complete, absolute path to work properly
+
+## What's Next?
+
+Once set up, you can use Amazon Q to explore your design system by asking natural language questions about components, patterns, and layouts. The AI will help you find what you need without having to manually browse through documentation.
