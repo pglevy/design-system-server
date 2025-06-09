@@ -23,9 +23,11 @@ The command line tool will have you pick a node version manager and node package
 > [!IMPORTANT]
 > During installation, sign in with the `Use with Pro license` option.
 
-1. Visit the Amazon Q chat installation page using this start URL: [Amazon Q Developer](https://aws.amazon.com/q/developer/)
-2. Click "Get Started" and follow the installation instructions for your operating system
-3. Once installed, you can access Amazon Q through the terminal command line by typing `q chat`
+1. Visit the Amazon Q chat installation page using this start URL: [Amazon Q Developer](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line-installing.html?b=cli&p=overview&s=tiles) (Command Line)
+    - We want to use the command line version (CLI) because it's more reliable and has access to the MCP tools.
+3. Click "Get Started" and follow the installation instructions for your operating system
+4. Once installed, you can access Amazon Q through the terminal command line by typing `q chat`
+    - Once you start Q, we recommend switching the model to Claude 4 by typing `/model` and choosing that option.
 
 ## Step 2: Download This Project
 
