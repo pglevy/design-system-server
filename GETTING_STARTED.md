@@ -105,19 +105,21 @@ At a high level, here's what you need to do:
 
 Now you need to tell Amazon Q where to find this design system server.
 
-1. **Find your configuration file location:**
-   - **Mac:** `~/.config/amazonq/mcp_config.json`
-   - **Windows:** `%USERPROFILE%\.config\amazonq\mcp_config.json`
+1. **Set up configuration file:**
+   - Run this command in Terminal to create the empty file in the right place and open it with TextEdit:
+     ```
+     mkdir -p ~/.aws/amazonq && touch ~/.aws/amazonq/mcp.json && open -e ~/.aws/amazonq/mcp.json
+     ```
 
 2. **Get the full path to your project:**
-   - In Terminal/Command Prompt, while in the project folder, run:
+   - In Terminal/Command Prompt, while in the `design-system-server` project folder, run:
      ```
      pwd
      ```
    - Copy the full path that appears (it will look something like `/Users/yourname/Desktop/design-system-server`)
 
 3. **Edit the configuration file:**
-   - Open the config file in VS Code or any text editor
+   - Open the config file in VS Code or any text editor (if it's not already open in TextEdit)
    - If the file or directory doesn't exist, create it
    - Add this configuration (replace `YOUR_FULL_PATH_HERE` with the path you copied):
 
@@ -135,6 +137,10 @@ Now you need to tell Amazon Q where to find this design system server.
    ```
 
 4. **Save the file and restart Amazon Q**
+
+5. **Confirm MCP configuration**
+   - In a new Terminal window, type this command: `qchat mcp list`
+   - You should see a reference to the file you just edited (under global:) with a `design-system` item listed
 
 ## Step 6: Set Up Your Working Project
 
