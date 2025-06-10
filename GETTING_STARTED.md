@@ -62,15 +62,25 @@ You have two options to get the project files:
 
 ## Step 4: Set Up GitHub Access
 
-The MCP server needs access to GitHub to fetch the design system documentation. You'll need to create a Personal Access Token with access to only the specific design system repository.
+The MCP server needs API access to GitHub to fetch the design system documentation. You'll need to create a Personal Access Token with access to only the specific design system repository.
+
+At a high level, here's what you need to do:
+
+- Fork the `design-system-docs` repo to your account (i.e., `yourname/design-system-docs`)
+- Create a Personal Access Token (PAT) to allow API access to your forked repo
+- Copy the PAT to your local copy of the `design-system-server` repo
+
+
+1. **Fork the `design-system-docs` repo**
+   - Use the Fork button at the top of repo page
 
 1. **Create a GitHub Personal Access Token:**
    - Go to [GitHub Settings > Developer settings > Personal access tokens > Fine-grained tokens](https://github.com/settings/personal-access-tokens/new)
    - Click "Generate new token"
-   - Give it a descriptive name like "Design System MCP Server"
+   - Give it a descriptive name like "Design System Docs Access"
    - Set expiration to your preference (90 days is recommended)
-   - **Resource owner:** Select "appian" from the dropdown
-   - **Repository access:** Select "Selected repositories" and choose the design system documentation repository
+   - **Resource owner:** Select your account from the dropdown
+   - **Repository access:** Select "Selected repositories" and choose the `design-system-docs` repository
    - **Repository permissions:** Expand this section and set:
      - **Contents:** Read (this allows reading files from the repository)
      - **Metadata:** Read (this is automatically selected and required)
@@ -79,7 +89,7 @@ The MCP server needs access to GitHub to fetch the design system documentation. 
    - **Important:** Copy the token immediately - you won't be able to see it again!
 
 2. **Create a .env file:**
-   - In the design-system-server folder, create a new file called `.env`
+   - In the design-system-server folder on your machine, create a new file called `.env`
    - Add this line to the file (replace `your_token_here` with your actual token):
      ```
      GITHUB_TOKEN=your_token_here
