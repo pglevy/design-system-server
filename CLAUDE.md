@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Build and Development
 - `npm run build` - Compiles TypeScript to JavaScript in the `build/` directory and makes the output executable
+- `npm test` - Runs comprehensive tests for GitHub API connectivity and MCP server functionality
 - `tsc` - Run TypeScript compiler directly for type checking
 
 ### Installation and Setup

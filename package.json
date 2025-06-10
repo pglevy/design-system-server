@@ -7,7 +7,8 @@
     "design-system": "./build/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod 755 build/index.js"
+    "build": "tsc && chmod 755 build/index.js",
+    "test": "npm run build && node test.js"
   },
   "files": [
     "build"
