@@ -23,9 +23,11 @@ The command line tool will have you pick a node version manager and node package
 > [!IMPORTANT]
 > During installation, sign in with the `Use with Pro license` option.
 
-1. Visit the Amazon Q chat installation page using this start URL: [Amazon Q Developer](https://aws.amazon.com/q/developer/)
-2. Click "Get Started" and follow the installation instructions for your operating system
-3. Once installed, you can access Amazon Q through the terminal command line by typing `q chat`
+1. Visit the Amazon Q chat installation page using this start URL: [Amazon Q Developer](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line-installing.html?b=cli&p=overview&s=tiles) (Command Line)
+    - We want to use the command line version (CLI) because it's more reliable and has access to the MCP tools.
+3. Click "Get Started" and follow the installation instructions for your operating system
+4. Once installed, you can access Amazon Q through the terminal command line by typing `q chat`
+    - Once you start Q, we recommend switching the model to Claude 4 by typing `/model` and choosing that option.
 
 ## Step 2: Download This Project
 
@@ -60,15 +62,25 @@ You have two options to get the project files:
 
 ## Step 4: Set Up GitHub Access
 
-The MCP server needs access to GitHub to fetch the design system documentation. You'll need to create a Personal Access Token with access to only the specific design system repository.
+The MCP server needs API access to GitHub to fetch the design system documentation. You'll need to create a Personal Access Token with access to only the specific design system repository.
+
+At a high level, here's what you need to do:
+
+- Fork the `design-system-docs` repo to your account (i.e., `yourname/design-system-docs`)
+- Create a Personal Access Token (PAT) to allow API access to your forked repo
+- Copy the PAT to your local copy of the `design-system-server` repo
+
+
+1. **Fork the `design-system-docs` repo**
+   - Use the Fork button at the top of repo page
 
 1. **Create a GitHub Personal Access Token:**
    - Go to [GitHub Settings > Developer settings > Personal access tokens > Fine-grained tokens](https://github.com/settings/personal-access-tokens/new)
    - Click "Generate new token"
-   - Give it a descriptive name like "Design System MCP Server"
+   - Give it a descriptive name like "Design System Docs Access"
    - Set expiration to your preference (90 days is recommended)
-   - **Resource owner:** Select "appian" from the dropdown
-   - **Repository access:** Select "Selected repositories" and choose the design system documentation repository
+   - **Resource owner:** Select your account from the dropdown
+   - **Repository access:** Select "Selected repositories" and choose the `design-system-docs` repository
    - **Repository permissions:** Expand this section and set:
      - **Contents:** Read (this allows reading files from the repository)
      - **Metadata:** Read (this is automatically selected and required)
@@ -77,7 +89,7 @@ The MCP server needs access to GitHub to fetch the design system documentation. 
    - **Important:** Copy the token immediately - you won't be able to see it again!
 
 2. **Create a .env file:**
-   - In the design-system-server folder, create a new file called `.env`
+   - In the design-system-server folder on your machine, create a new file called `.env`
    - Add this line to the file (replace `your_token_here` with your actual token):
      ```
      GITHUB_TOKEN=your_token_here
@@ -93,19 +105,21 @@ The MCP server needs access to GitHub to fetch the design system documentation. 
 
 Now you need to tell Amazon Q where to find this design system server.
 
-1. **Find your configuration file location:**
-   - **Mac:** `~/.config/amazonq/mcp_config.json`
-   - **Windows:** `%USERPROFILE%\.config\amazonq\mcp_config.json`
+1. **Set up configuration file:**
+   - Run this command in Terminal to create the empty file in the right place and open it with TextEdit:
+     ```
+     mkdir -p ~/.aws/amazonq && touch ~/.aws/amazonq/mcp.json && open -e ~/.aws/amazonq/mcp.json
+     ```
 
 2. **Get the full path to your project:**
-   - In Terminal/Command Prompt, while in the project folder, run:
+   - In Terminal/Command Prompt, while in the `design-system-server` project folder, run:
      ```
      pwd
      ```
    - Copy the full path that appears (it will look something like `/Users/yourname/Desktop/design-system-server`)
 
 3. **Edit the configuration file:**
-   - Open the config file in VS Code or any text editor
+   - Open the config file in VS Code or any text editor (if it's not already open in TextEdit)
    - If the file or directory doesn't exist, create it
    - Add this configuration (replace `YOUR_FULL_PATH_HERE` with the path you copied):
 
@@ -123,6 +137,10 @@ Now you need to tell Amazon Q where to find this design system server.
    ```
 
 4. **Save the file and restart Amazon Q**
+
+5. **Confirm MCP configuration**
+   - In a new Terminal window, type this command: `qchat mcp list`
+   - You should see a reference to the file you just edited (under global:) with a `design-system` item listed
 
 ## Step 6: Set Up Your Working Project
 
