@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 // Define the type structure for our design system data
 export interface DesignSystemItem {
@@ -24,11 +25,14 @@ export interface DesignSystemData {
 
 // Load environment variables from .env file
 function loadGitHubToken(): string {
+  // Get the current file's directory (ES module equivalent of __dirname)
+  const currentDir = dirname(fileURLToPath(import.meta.url));
+  
   // Try multiple possible locations for .env file
   const possiblePaths = [
     join(process.cwd(), '.env'),
-    join(__dirname, '..', '.env'),
-    join(__dirname, '..', '..', '.env')
+    join(currentDir, '..', '.env'),
+    join(currentDir, '..', '..', '.env')
   ];
   
   for (const envPath of possiblePaths) {
