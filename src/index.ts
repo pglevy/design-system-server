@@ -57,6 +57,8 @@ function parseFrontmatter(content: string): ParsedMarkdown {
 async function fetchRepoContent(filePath: string): Promise<ParsedMarkdown | null> {
   try {
     const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${filePath}`;
+    console.error(`[DEBUG] Fetching: ${filePath}`);
+    
     const response = await fetch(url, {
       headers: {
         'Authorization': `token ${GITHUB_CONFIG.token}`,
@@ -66,6 +68,7 @@ async function fetchRepoContent(filePath: string): Promise<ParsedMarkdown | null
     });
     
     if (!response.ok) {
+      console.error(`[ERROR] GitHub API error for ${filePath}: ${response.status} ${response.statusText}`);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
@@ -73,10 +76,14 @@ async function fetchRepoContent(filePath: string): Promise<ParsedMarkdown | null
     
     // GitHub API returns base64 encoded content
     const content = atob(data.content);
+    console.error(`[DEBUG] Content fetched successfully: ${content.length} characters`);
     
-    return parseFrontmatter(content);
+    const parsed = parseFrontmatter(content);
+    console.error(`[DEBUG] Content parsed: Design=${parsed.designSection.length}chars, Development=${parsed.developmentSection.length}chars`);
+    
+    return parsed;
   } catch (error) {
-    console.error(`Error fetching repo content for ${filePath}:`, error);
+    console.error(`[ERROR] Failed to fetch repo content for ${filePath}:`, error);
     return null;
   }
 }
@@ -183,11 +190,12 @@ server.tool(
     const repoContent = await fetchRepoContent(component.filePath);
     
     if (!repoContent) {
+      console.error(`[ERROR] Unable to fetch content for ${component.title} at ${component.filePath}`);
       return {
         content: [
           {
             type: "text",
-            text: `Failed to fetch details for ${component.title}.\n\nBasic information:\n${component.body}\n\nFile path: ${component.filePath}`,
+            text: `Failed to fetch details for ${component.title}.\n\nBasic information:\n${component.body}\n\nFile path: ${component.filePath}\n\nNote: This may be due to GitHub API limits, network issues, or authentication problems. Check server logs for details.`,
           },
         ],
       };
@@ -218,6 +226,8 @@ server.tool(
     if (!repoContent.designSection && !repoContent.developmentSection) {
       response += `## Content\n\n${repoContent.content}`;
     }
+    
+    console.error(`[DEBUG] Final response size: ${response.length} characters for ${component.title}`);
     
     return {
       content: [
