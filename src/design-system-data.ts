@@ -1,3 +1,6 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
 // Define the type structure for our design system data
 export interface DesignSystemItem {
   title: string;
@@ -19,11 +22,42 @@ export interface DesignSystemData {
   [key: string]: DesignSystemCategory;
 }
 
+// Load environment variables from .env file
+function loadGitHubToken(): string {
+  // Try multiple possible locations for .env file
+  const possiblePaths = [
+    join(process.cwd(), '.env'),
+    join(__dirname, '..', '.env'),
+    join(__dirname, '..', '..', '.env')
+  ];
+  
+  for (const envPath of possiblePaths) {
+    try {
+      console.error(`[DEBUG] Attempting to load .env from: ${envPath}`);
+      const envContent = readFileSync(envPath, 'utf8');
+      console.error(`[DEBUG] .env content length: ${envContent.length}`);
+      const tokenMatch = envContent.match(/GITHUB_TOKEN=(.+)/);
+      if (tokenMatch) {
+        const token = tokenMatch[1].trim();
+        console.error(`[DEBUG] Token loaded from .env: ${token.substring(0, 20)}...`);
+        return token;
+      }
+    } catch (error) {
+      console.error(`[DEBUG] Failed to load .env from ${envPath}: ${error}`);
+    }
+  }
+  
+  // Fall back to environment variable
+  const envToken = process.env.GITHUB_TOKEN || '';
+  console.error(`[DEBUG] Using environment token: ${envToken ? envToken.substring(0, 20) + '...' : 'EMPTY'}`);
+  return envToken;
+}
+
 // GitHub repository configuration
 export const GITHUB_CONFIG = {
   owner: 'pglevy',
   repo: 'design-system-docs',
-  token: process.env.GITHUB_TOKEN || ''
+  token: loadGitHubToken()
 };
 
 export const designSystemData: DesignSystemData = {
