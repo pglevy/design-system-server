@@ -24,7 +24,7 @@ export interface DesignSystemData {
 }
 
 // Load environment variables from .env file
-function loadGitHubToken(): string {
+function loadEnvVariable(variableName: string): string {
   // Get the current file's directory (ES module equivalent of __dirname)
   const currentDir = dirname(fileURLToPath(import.meta.url));
   
@@ -39,12 +39,16 @@ function loadGitHubToken(): string {
     try {
       console.error(`[DEBUG] Attempting to load .env from: ${envPath}`);
       const envContent = readFileSync(envPath, 'utf8');
-      console.error(`[DEBUG] .env content length: ${envContent.length}`);
-      const tokenMatch = envContent.match(/GITHUB_TOKEN=(.+)/);
-      if (tokenMatch) {
-        const token = tokenMatch[1].trim();
-        console.error(`[DEBUG] Token loaded from .env: ${token.substring(0, 20)}...`);
-        return token;
+      const regex = new RegExp(`${variableName}=(.+)`);
+      const match = envContent.match(regex);
+      if (match) {
+        const value = match[1].trim();
+        if (variableName === 'GITHUB_TOKEN') {
+          console.error(`[DEBUG] ${variableName} loaded from .env: ${value.substring(0, 20)}...`);
+        } else {
+          console.error(`[DEBUG] ${variableName} loaded from .env: ${value}`);
+        }
+        return value;
       }
     } catch (error) {
       console.error(`[DEBUG] Failed to load .env from ${envPath}: ${error}`);
@@ -52,16 +56,20 @@ function loadGitHubToken(): string {
   }
   
   // Fall back to environment variable
-  const envToken = process.env.GITHUB_TOKEN || '';
-  console.error(`[DEBUG] Using environment token: ${envToken ? envToken.substring(0, 20) + '...' : 'EMPTY'}`);
-  return envToken;
+  const envValue = process.env[variableName] || '';
+  if (variableName === 'GITHUB_TOKEN') {
+    console.error(`[DEBUG] Using environment ${variableName}: ${envValue ? envValue.substring(0, 20) + '...' : 'EMPTY'}`);
+  } else {
+    console.error(`[DEBUG] Using environment ${variableName}: ${envValue || 'EMPTY'}`);
+  }
+  return envValue;
 }
 
 // GitHub repository configuration
 export const GITHUB_CONFIG = {
-  owner: 'pglevy',
-  repo: 'design-system-docs',
-  token: loadGitHubToken()
+  owner: loadEnvVariable('GITHUB_OWNER'),
+  repo: loadEnvVariable('GITHUB_REPO'),
+  token: loadEnvVariable('GITHUB_TOKEN')
 };
 
 export const designSystemData: DesignSystemData = {

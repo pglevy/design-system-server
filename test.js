@@ -13,9 +13,14 @@ function loadEnv() {
   try {
     const envContent = readFileSync('.env', 'utf8');
     const token = envContent.match(/GITHUB_TOKEN=(.+)/)?.[1];
-    if (token) {
+    const owner = envContent.match(/GITHUB_OWNER=(.+)/)?.[1];
+    const repo = envContent.match(/GITHUB_REPO=(.+)/)?.[1];
+    
+    if (token && owner && repo) {
       process.env.GITHUB_TOKEN = token;
-      return true;
+      process.env.GITHUB_OWNER = owner;
+      process.env.GITHUB_REPO = repo;
+      return { token, owner, repo };
     }
   } catch (error) {
     console.log('⚠️  Could not load .env file');
@@ -27,7 +32,7 @@ function loadEnv() {
 async function testGitHubAPI() {
   console.log('1. Testing GitHub API connectivity...');
   
-  const url = 'https://api.github.com/repos/pglevy/design-system-docs/contents/components/breadcrumbs.md';
+  const url = `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/components/breadcrumbs.md`;
   
   try {
     const response = await fetch(url, {
@@ -158,9 +163,12 @@ async function runTests() {
   
   // Load environment
   const envLoaded = loadEnv();
-  if (!envLoaded || !process.env.GITHUB_TOKEN) {
-    console.log('❌ GITHUB_TOKEN not found in .env file');
-    console.log('   Please ensure .env contains: GITHUB_TOKEN=your_token');
+  if (!envLoaded || !process.env.GITHUB_TOKEN || !process.env.GITHUB_OWNER || !process.env.GITHUB_REPO) {
+    console.log('❌ Required environment variables not found in .env file');
+    console.log('   Please ensure .env contains:');
+    console.log('   GITHUB_TOKEN=your_token');
+    console.log('   GITHUB_OWNER=your_github_username');
+    console.log('   GITHUB_REPO=your_repo_name');
     process.exit(1);
   }
   

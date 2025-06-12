@@ -100,7 +100,7 @@ A centralized, developer-accessible design system documentation platform that ma
 
 ### **Content Management with GitHub**
 
-Private repo: https://github.com/pglevy/design-system-docs
+Private repo: Configure in your `.env` file with your own repository details.
 
 PAT: See the `.env` file.
 
