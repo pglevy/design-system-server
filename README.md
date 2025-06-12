@@ -1,6 +1,6 @@
 # Design System MCP Server
 
-This is a Model Context Protocol (MCP) server that provides access to design system documentation through GitHub Gists. It allows LLMs like Claude to query and explore design system components, layouts, and patterns.
+This is a Model Context Protocol (MCP) server that provides access to design system documentation through GitHub repositories. It allows LLMs like Claude to query and explore design system components, layouts, and patterns.
 
 ## Features
 
@@ -11,12 +11,20 @@ This is a Model Context Protocol (MCP) server that provides access to design sys
 
 ## Installation
 
-1. Clone this repository
-2. Install dependencies:
+1. Clone this repository (or fork it to your own GitHub account)
+2. Copy the environment file and configure it:
+   ```
+   cp .env.example .env
+   ```
+3. Edit `.env` and update the values:
+   - `GITHUB_TOKEN`: Your GitHub personal access token (generate at https://github.com/settings/tokens)
+   - `GITHUB_OWNER`: Your GitHub username (the repository owner)
+   - `GITHUB_REPO`: Your repository name (e.g., "design-system-docs")
+4. Install dependencies:
    ```
    npm install
    ```
-3. Build the server:
+5. Build the server:
    ```
    npm run build
    ```
