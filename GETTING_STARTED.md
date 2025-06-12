@@ -41,7 +41,7 @@ You have two options to get the project files:
 
 ### Option B: Clone with Git (If you're comfortable with Git)
 1. Open Terminal (Mac) or Command Prompt (Windows)
-2. Navigate to where you want the project: `cd Desktop`
+2. Navigate to where you want the project, e.g., `~/repo/`
 3. Run: `git clone [repository-url]`
 
 ## Step 3: Install the Project
