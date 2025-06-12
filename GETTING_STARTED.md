@@ -73,6 +73,7 @@ At a high level, here's what you need to do:
 
 1. **Fork the `design-system-docs` repo**
    - Use the Fork button at the top of repo page
+   - Create it as a PRIVATE repo in your account
 
 1. **Create a GitHub Personal Access Token:**
    - Go to [GitHub Settings > Developer settings > Personal access tokens > Fine-grained tokens](https://github.com/settings/personal-access-tokens/new)
