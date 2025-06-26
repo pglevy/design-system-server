@@ -73,7 +73,7 @@ At a high level, here's what you need to do:
 
 1. **Fork the `design-system-docs` repo**
    - Use the Fork button at the top of repo page
-   - Create it as a PRIVATE repo in your account
+     - It will be created as a private repo in your account because the parent repo is private (for now)
 
 1. **Create a GitHub Personal Access Token:**
    - Go to [GitHub Settings > Developer settings > Personal access tokens > Fine-grained tokens](https://github.com/settings/personal-access-tokens/new)
@@ -89,19 +89,19 @@ At a high level, here's what you need to do:
    - Click "Generate token"
    - **Important:** Copy the token immediately - you won't be able to see it again!
 
-2. **Create a .env file:**
+1. **Create a .env file:**
    - In the design-system-server folder on your machine, copy the example environment file:
      ```
      cp .env.example .env
      ```
    - Open the `.env` file in a text editor
    - Update the values:
-     - `GITHUB_TOKEN`: Replace with your actual token from step 1
+     - `GITHUB_TOKEN`: Replace with your actual token from previous step
      - `GITHUB_OWNER`: Replace with your GitHub username
      - `GITHUB_REPO`: Replace with your repository name (usually "design-system-docs")
    - Save the file
 
-3. **Rebuild the project:**
+1. **Rebuild the project:**
    ```
    npm run build
    ```
