@@ -38,6 +38,7 @@ You have two options to get the project files:
 2. Click the green "Code" button
 3. Select "Download ZIP"
 4. Extract the ZIP file to your Desktop or preferred location
+   - It will download and extract as `design-system-server-main`. You can remove the `-main` or leave as is but the rest of the instructions assume it's not there.
 
 ### Option B: Clone with Git (If you're comfortable with Git)
 1. Open Terminal (Mac) or Command Prompt (Windows)
@@ -66,12 +67,12 @@ The MCP server needs API access to GitHub to fetch the design system documentati
 
 At a high level, here's what you need to do:
 
-- Fork the `design-system-docs` repo to your account (i.e., `yourname/design-system-docs`)
+- Fork the [design-system-docs](https://github.com/pglevy/design-system-docs) repo (*not* the design-system-server repo this file is in) to your account (i.e., `yourname/design-system-docs`)
 - Create a Personal Access Token (PAT) to allow API access to your forked repo
 - Copy the PAT to your local copy of the `design-system-server` repo
 
 
-1. **Fork the `design-system-docs` repo**
+1. **Fork the [design-system-docs](https://github.com/pglevy/design-system-docs) repo**
    - Use the Fork button at the top of repo page
      - It will be created as a private repo in your account because the parent repo is private (for now)
 
@@ -90,16 +91,19 @@ At a high level, here's what you need to do:
    - **Important:** Copy the token immediately - you won't be able to see it again!
 
 1. **Create a .env file:**
-   - In the design-system-server folder on your machine, copy the example environment file:
+   - In the design-system-server folder on your machine, run this command in Terminal to copy the example environment file:
      ```
      cp .env.example .env
      ```
    - Open the `.env` file in a text editor
+     ```
+     open -e .env
+     ```
    - Update the values:
      - `GITHUB_TOKEN`: Replace with your actual token from previous step
      - `GITHUB_OWNER`: Replace with your GitHub username
-     - `GITHUB_REPO`: Replace with your repository name (usually "design-system-docs")
-   - Save the file
+     - `GITHUB_REPO`: Replace with your repository name (if you changed it from design-system-docs)
+   - Save and close the file
 
 1. **Rebuild the project:**
    ```
@@ -121,12 +125,11 @@ Now you need to tell Amazon Q where to find this design system server.
      ```
      pwd
      ```
-   - Copy the full path that appears (it will look something like `/Users/yourname/Desktop/design-system-server`)
+   - Copy the full path that appears and paste it somewhere handy for now (it will look something like `/Users/first.last/Desktop/design-system-server`)
 
 3. **Edit the configuration file:**
    - Open the config file in VS Code or any text editor (if it's not already open in TextEdit)
-   - If the file or directory doesn't exist, create it
-   - Add this configuration (replace `YOUR_FULL_PATH_HERE` with the path you copied):
+   - Add this configuration (replace `YOUR_FULL_PATH_HERE` with the path you copied and leave the `/build/index.js` after the path):
 
    ```json
    {
@@ -155,19 +158,22 @@ Now that the MCP server is configured, you'll want to create a separate workspac
    - Create a new folder on your Desktop called something like `design-system-work` or `my-design-project`
    - This folder will be separate from the MCP server folder you downloaded earlier
 
-2. **Open your working folder in VS Code:**
+1. **Open your working folder in VS Code:**
    - Launch VS Code
    - Go to File → Open Folder
    - Select your new working project folder
    - This gives you a clean workspace for your design system files
 
-3. **Understanding the workflow:**
+1. **Download the `CLAUDE.md` file from `design-system-docs`**
+   - Put this file in your project folder (it provides some "tips and tricks" for Q to avoid silly SAIL mistakes)
+
+1. **Understanding the workflow:**
    - You'll use Amazon Q chat to query the design system and generate component code
    - Amazon Q will provide you with SAIL code snippets
    - You can save these snippets as files in your VS Code project for reference
    - When ready, you'll copy and paste the final code into Interface Designer
 
-4. **Organize your workspace:**
+1. **Organize your workspace:**
    - Consider creating folders like:
      - `components/` - for individual component files
      - `layouts/` - for layout patterns
@@ -180,7 +186,7 @@ Now that the MCP server is configured, you'll want to create a separate workspac
 2. Try asking questions like:
    - "What design system categories are available?"
    - "Show me all components in the components category"
-   - "Search the design system for buttons"
+   - "Search the design system for cards"
 
 ## Troubleshooting
 
