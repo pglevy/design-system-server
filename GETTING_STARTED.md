@@ -81,14 +81,14 @@ At a high level, here's what you need to do:
    - Click "Generate new token"
    - Give it a descriptive name like "Design System Docs Access"
    - Set expiration to your preference (90 days is recommended)
-   - **Resource owner:** Select your account from the dropdown
-   - **Repository access:** Select "Selected repositories" and choose the `design-system-docs` repository
+   - **Resource owner:** Select your account from the dropdown (if not already)
+   - **Repository access:** Select "Selected repositories" and choose your `design-system-docs` repository
    - **Repository permissions:** Expand this section and set:
      - **Contents:** Read (this allows reading files from the repository)
      - **Metadata:** Read (this is automatically selected and required)
    - Leave all other permissions as "No access"
    - Click "Generate token"
-   - **Important:** Copy the token immediately - you won't be able to see it again!
+   - **Important:** Copy the token immediately - you won't be able to see it again! (You may want to paste it in a temporary location until setup is complete.)
 
 1. **Create a .env file:**
    - In the design-system-server folder on your machine, run this command in Terminal to copy the example environment file:
@@ -128,7 +128,7 @@ Now you need to tell Amazon Q where to find this design system server.
    - Copy the full path that appears and paste it somewhere handy for now (it will look something like `/Users/first.last/Desktop/design-system-server`)
 
 3. **Edit the configuration file:**
-   - Open the config file in VS Code or any text editor (if it's not already open in TextEdit)
+   - Open the `mcp.json` file in VS Code or any text editor (if it's not already open in TextEdit)
    - Add this configuration (replace `YOUR_FULL_PATH_HERE` with the path you copied and leave the `/build/index.js` after the path):
 
    ```json
@@ -164,7 +164,7 @@ Now that the MCP server is configured, you'll want to create a separate workspac
    - Select your new working project folder
    - This gives you a clean workspace for your design system files
 
-1. **Download the `CLAUDE.md` file from `design-system-docs`**
+1. **Download or copy [CLAUDE.md](https://github.com/pglevy/design-system-docs/blob/main/CLAUDE.md) from `design-system-docs`**
    - Put this file in your project folder (it provides some "tips and tricks" for Q to avoid silly SAIL mistakes)
 
 1. **Understanding the workflow:**
@@ -187,6 +187,10 @@ Now that the MCP server is configured, you'll want to create a separate workspac
    - "What design system categories are available?"
    - "Show me all components in the components category"
    - "Search the design system for cards"
+
+## Step 8: Leave Feedback
+
+Run into a problem or have an idea for improvement? [Open an issue in `design-system-docs` using the Feedback template](https://github.com/pglevy/design-system-docs/issues/new?template=beta-feedback.md)
 
 ## Troubleshooting
 
