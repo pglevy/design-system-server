@@ -105,11 +105,6 @@ export const designSystemData: DesignSystemData = {
       title: 'Voice and Tone',
       body: 'Guidelines for consistent voice and tone across content.',
       filePath: 'content-style-guide/voice-and-tone.md'
-    },
-    'dictionary': {
-      title: 'Dictionary',
-      body: 'Terminology and language standards.',
-      filePath: 'content-style-guide/dictionary.md'
     }
   },
   accessibility: {
@@ -154,11 +149,6 @@ export const designSystemData: DesignSystemData = {
       title: 'Pane Layouts',
       body: 'Multi-pane layout patterns for complex interfaces.',
       filePath: 'layouts/pane-layouts.md'
-    },
-    'portals': {
-      title: 'Portals',
-      body: 'Portal and hub page layout patterns.',
-      filePath: 'layouts/portals.md'
     },
     'record-views': {
       title: 'Record Views',
