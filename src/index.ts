@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { designSystemData, DesignSystemItem, GITHUB_CONFIG } from "./design-system-data.js";
+import { SourceManager, type SourcedContent } from "./source-manager.js";
 
 // Interface for parsed markdown content
 interface ParsedMarkdown {
@@ -94,7 +95,56 @@ const server = new McpServer({
   version: "1.0.0",
 });
 
-// Tool 1: List all categories
+// Initialize source manager
+const sourceManager = new SourceManager();
+
+// Tool 1: Get content sources status
+server.tool(
+  "get-content-sources",
+  "Get information about available documentation sources and their status",
+  {},
+  async () => {
+    const sources = sourceManager.getSourceStatus();
+    
+    const sourceInfo = sources.map(source => 
+      `**${source.name.toUpperCase()} SOURCE**\n` +
+      `- Enabled: ${source.enabled}\n` +
+      `- Priority: ${source.priority}\n` +
+      `- Authentication Required: ${source.auth_required}\n` +
+      `- Last Sync: ${source.last_sync || 'Never'}`
+    ).join('\n\n');
+    
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Documentation Sources Status:\n\n${sourceInfo}`,
+        },
+      ],
+    };
+  },
+);
+
+// Tool 2: Refresh documentation sources
+server.tool(
+  "refresh-sources",
+  "Trigger manual refresh of documentation sources",
+  {},
+  async () => {
+    await sourceManager.refreshSources();
+    
+    return {
+      content: [
+        {
+          type: "text",
+          text: "Documentation sources refreshed successfully. Cache cleared and sources will be re-synced on next request.",
+        },
+      ],
+    };
+  },
+);
+
+// Tool 3: List all categories
 server.tool(
   "list-categories",
   "List all design system categories",
@@ -113,7 +163,7 @@ server.tool(
   },
 );
 
-// Tool 2: List components in a category
+// Tool 4: List components in a category
 server.tool(
   "list-components",
   "List components in a specific category",
@@ -149,15 +199,17 @@ server.tool(
   },
 );
 
-// Tool 3: Get detailed component information
+// Tool 5: Get detailed component information (enhanced with source attribution)
 server.tool(
   "get-component-details",
-  "Get detailed information about a specific component",
+  "Get detailed information about a specific component with source attribution",
   {
     category: z.string().describe("Design system category (components, layouts, patterns)"),
     componentName: z.string().describe("Name of the component, layout, or pattern"),
+    includeInternal: z.boolean().optional().describe("Include internal documentation if available (default: false)"),
+    sourceOnly: z.enum(["public", "internal", "all"]).optional().describe("Filter by specific source"),
   },
-  async ({ category, componentName }) => {
+  async ({ category, componentName, includeInternal = false, sourceOnly }) => {
     const normalizedCategory = category.toLowerCase();
     const normalizedComponentName = componentName.toLowerCase();
     
@@ -187,9 +239,10 @@ server.tool(
     
     const component = categoryData[normalizedComponentName] as DesignSystemItem;
     
-    const repoContent = await fetchRepoContent(component.filePath);
+    // Use new source manager to get content
+    const sourcedContent = await sourceManager.getContent(component.filePath);
     
-    if (!repoContent) {
+    if (!sourcedContent) {
       console.error(`[ERROR] Unable to fetch content for ${component.title} at ${component.filePath}`);
       return {
         content: [
@@ -200,34 +253,68 @@ server.tool(
         ],
       };
     }
+
+    // Apply source filtering
+    if (sourceOnly && sourcedContent.source !== sourceOnly) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Component ${component.title} not available from ${sourceOnly} source. Available from: ${sourcedContent.source}`,
+          },
+        ],
+      };
+    }
+
+    // Check internal access
+    if (sourcedContent.source === 'internal' && !includeInternal) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Component ${component.title} is only available in internal documentation. Set includeInternal=true to access.`,
+          },
+        ],
+      };
+    }
     
     let response = `# ${component.title}\n\n${component.body}\n\n`;
     
+    // Add source attribution
+    response += `**Source:** ${sourcedContent.source.toUpperCase()}`;
+    if (sourcedContent.overrides) {
+      response += ` (overrides ${sourcedContent.overrides})`;
+    }
+    response += '\n';
+    
     // Add frontmatter info if available
-    if (Object.keys(repoContent.frontmatter).length > 0) {
-      response += `**Status:** ${repoContent.frontmatter.status || 'Unknown'}\n`;
-      if (repoContent.frontmatter.last_updated) {
-        response += `**Last Updated:** ${repoContent.frontmatter.last_updated}\n`;
+    if (Object.keys(sourcedContent.frontmatter).length > 0) {
+      response += `**Status:** ${sourcedContent.frontmatter.status || 'Unknown'}\n`;
+      if (sourcedContent.last_updated) {
+        response += `**Last Updated:** ${sourcedContent.last_updated}\n`;
       }
       response += '\n';
     }
     
+    // Parse content sections (reuse existing logic)
+    const parsedContent = parseFrontmatter(sourcedContent.content);
+    
     // Add Design section
-    if (repoContent.designSection) {
-      response += `## Design\n\n${repoContent.designSection}\n\n`;
+    if (parsedContent.designSection) {
+      response += `## Design\n\n${parsedContent.designSection}\n\n`;
     }
     
     // Add Development section
-    if (repoContent.developmentSection) {
-      response += `## Development\n\n${repoContent.developmentSection}`;
+    if (parsedContent.developmentSection) {
+      response += `## Development\n\n${parsedContent.developmentSection}`;
     }
     
     // If no sections found, show full content
-    if (!repoContent.designSection && !repoContent.developmentSection) {
-      response += `## Content\n\n${repoContent.content}`;
+    if (!parsedContent.designSection && !parsedContent.developmentSection) {
+      response += `## Content\n\n${sourcedContent.content}`;
     }
     
-    console.error(`[DEBUG] Final response size: ${response.length} characters for ${component.title}`);
+    console.error(`[DEBUG] Final response size: ${response.length} characters for ${component.title} from ${sourcedContent.source}`);
     
     return {
       content: [
@@ -240,14 +327,16 @@ server.tool(
   },
 );
 
-// Tool 4: Search across all components
+// Tool 6: Search across all components (enhanced with source filtering)
 server.tool(
   "search-design-system",
-  "Search for components, layouts, or patterns by keyword",
+  "Search for components, layouts, or patterns by keyword with source filtering",
   {
     keyword: z.string().describe("Keyword to search for in titles and descriptions"),
+    includeInternal: z.boolean().optional().describe("Include internal documentation in search (default: false)"),
+    sourceOnly: z.enum(["public", "internal", "all"]).optional().describe("Filter results by specific source"),
   },
-  async ({ keyword }) => {
+  async ({ keyword, includeInternal = false, sourceOnly }) => {
     const normalizedKeyword = keyword.toLowerCase();
     const results = [];
     
@@ -258,11 +347,26 @@ server.tool(
           component.title.toLowerCase().includes(normalizedKeyword) || 
           component.body.toLowerCase().includes(normalizedKeyword)
         ) {
+          // Get source information for this component
+          const sourcedContent = await sourceManager.getContent(component.filePath);
+          
+          // Apply source filtering
+          if (sourceOnly && sourcedContent?.source !== sourceOnly) {
+            continue;
+          }
+          
+          // Check internal access
+          if (sourcedContent?.source === 'internal' && !includeInternal) {
+            continue;
+          }
+          
           results.push({
             category: categoryName,
             name: componentName,
             title: component.title,
             description: component.body,
+            source: sourcedContent?.source || 'unknown',
+            overrides: sourcedContent?.overrides
           });
         }
       }
@@ -273,15 +377,19 @@ server.tool(
         content: [
           {
             type: "text",
-            text: `No results found for keyword "${keyword}".`,
+            text: `No results found for keyword "${keyword}" with the specified filters.`,
           },
         ],
       };
     }
     
-    const formattedResults = results.map(
-      result => `Category: ${result.category}\nComponent: ${result.name}\n${result.title}\n${result.description}`
-    );
+    const formattedResults = results.map(result => {
+      let resultText = `**Category:** ${result.category}\n**Component:** ${result.name}\n**Title:** ${result.title}\n**Description:** ${result.description}\n**Source:** ${result.source.toUpperCase()}`;
+      if (result.overrides) {
+        resultText += ` (overrides ${result.overrides})`;
+      }
+      return resultText;
+    });
     
     return {
       content: [
