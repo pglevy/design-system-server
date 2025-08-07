@@ -1,6 +1,6 @@
 # Getting Started with the Design System MCP Server
 
-This guide will help you set up the Design System MCP Server to work with Amazon Q chat. This tool allows you to query design system components, patterns, and layouts directly through conversational AI.
+This guide will help you set up the Design System MCP Server to work with Amazon Q chat. This tool allows you to query design system components, patterns, and layouts directly through conversational AI, with support for both public and internal documentation sources.
 
 ## What You'll Need
 
@@ -63,13 +63,22 @@ You have two options to get the project files:
 
 ## Step 4: Set Up GitHub Access
 
-The MCP server needs API access to GitHub to fetch the design system documentation. You'll need to create a Personal Access Token with access to only the specific design system repository.
+The MCP server needs API access to GitHub to fetch the design system documentation. You can set up access for public documentation only, or for both public and internal documentation.
+
+### Public Documentation Only (Default Setup)
 
 At a high level, here's what you need to do:
 
 - Fork the [design-system-docs](https://github.com/pglevy/design-system-docs) repo (*not* the design-system-server repo this file is in) to your account (i.e., `yourname/design-system-docs`)
 - Create a Personal Access Token (PAT) to allow API access to your forked repo
 - Copy the PAT to your local copy of the `design-system-server` repo
+
+### Internal Documentation Access (Optional)
+
+If you need access to internal documentation, you'll also need:
+- Access to the internal documentation repository
+- A separate GitHub token for the private repository
+- Additional environment configuration
 
 
 1. **Fork the [design-system-docs](https://github.com/pglevy/design-system-docs) repo**
@@ -99,10 +108,15 @@ At a high level, here's what you need to do:
      ```
      open -e .env
      ```
-   - Update the values:
+   - **For public documentation only**, update these values:
      - `GITHUB_TOKEN`: Replace with your actual token from previous step
      - `GITHUB_OWNER`: Replace with your GitHub username
      - `GITHUB_REPO`: Replace with your repository name (if you changed it from design-system-docs)
+   
+   - **For internal documentation access**, also add:
+     - `ENABLE_INTERNAL_DOCS=true`
+     - `INTERNAL_DOCS_TOKEN=your_internal_docs_token_here`
+   
    - Save and close the file
 
 1. **Rebuild the project:**
@@ -187,8 +201,56 @@ Now that the MCP server is configured, you'll want to create a separate workspac
    - "What design system categories are available?"
    - "Show me all components in the components category"
    - "Search the design system for cards"
+   - "Check the status of documentation sources" (to see if internal docs are enabled)
+   - "Get details about the cards component including internal documentation" (if you have internal access)
 
-## Step 8: Leave Feedback
+## Step 8: Internal Documentation Setup (Optional)
+
+If you need access to internal documentation, follow these additional steps:
+
+### Prerequisites
+- Access to the internal documentation repository
+- Permission to create GitHub Personal Access Tokens for private repositories
+
+### Setup Steps
+
+1. **Get access to internal repository:**
+   - Contact your team lead to get access to the internal documentation repository
+   - The repository is typically named something like `design-system-docs-internal`
+
+2. **Create internal documentation token:**
+   - Go to [GitHub Settings > Personal access tokens > Fine-grained tokens](https://github.com/settings/personal-access-tokens/new)
+   - Create a new token with access to the internal repository
+   - Set the same permissions as your public token (Contents: Read, Metadata: Read)
+
+3. **Update your .env file:**
+   ```bash
+   # Add these lines to your existing .env file
+   ENABLE_INTERNAL_DOCS=true
+   INTERNAL_DOCS_TOKEN=your_internal_token_here
+   ```
+
+4. **Rebuild and test:**
+   ```bash
+   npm run build
+   ```
+   
+   Test with Amazon Q:
+   - "Check the status of documentation sources"
+   - You should see both PUBLIC and INTERNAL sources listed
+
+### Using Internal Documentation
+
+Once set up, you can access internal documentation by:
+- Adding "including internal documentation" to your queries
+- Using specific internal component names
+- Searching within internal documentation only
+
+Example queries:
+- "Get details about the admin-panel component including internal documentation"
+- "Search for 'internal' components in internal documentation only"
+
+## Step 9: Leave Feedback
 
 Run into a problem or have an idea for improvement? [Open an issue in `design-system-docs` using the Feedback template](https://github.com/pglevy/design-system-docs/issues/new?template=beta-feedback.md)
 
@@ -203,8 +265,21 @@ Run into a problem or have an idea for improvement? [Open an issue in `design-sy
 - Install Node.js from [nodejs.org](https://nodejs.org)
 - Restart your Terminal/Command Prompt after installation
 
+**If internal documentation isn't working:**
+- Verify `ENABLE_INTERNAL_DOCS=true` is set in your .env file
+- Check that `INTERNAL_DOCS_TOKEN` has the correct permissions
+- Test the token manually by visiting the repository in your browser
+- Use "Check the status of documentation sources" to verify both sources are enabled
+
+**If you see "Authentication required" errors:**
+- Your internal documentation token may have expired
+- Verify the token has access to the correct repository
+- Try regenerating the token with the same permissions
+
 **Need help?**
 - Check the main README.md file for more detailed troubleshooting
+- See [Migration Guide](docs/MIGRATION.md) for upgrading from single-source setup
+- See [Configuration Guide](docs/CONFIGURATION.md) for advanced configuration options
 - The configuration file path must be the complete, absolute path to work properly
 
 ## What's Next?
