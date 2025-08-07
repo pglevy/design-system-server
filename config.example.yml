@@ -1,0 +1,30 @@
+# Design System MCP Server Configuration
+# Copy this file to config.yml and customize for your setup
+
+documentation:
+  sources:
+    # Public documentation source (always available)
+    public:
+      enabled: true
+      path: "./docs-public"
+      repo: "https://github.com/pglevy/design-system-docs.git"
+      branch: "main"
+      priority: 1
+      auth_required: false
+    
+    # Internal documentation source (optional, requires authentication)
+    # Uncomment and configure for internal documentation access
+    # internal:
+    #   enabled: false
+    #   path: "./docs-internal"
+    #   repo: "https://github.com/pglevy/design-system-docs-internal.git"
+    #   branch: "main"
+    #   priority: 2
+    #   auth_required: true
+    #   submodule_path: "design-system-docs"
+
+# How often to refresh documentation sources (in seconds)
+refresh_interval: 300
+
+# Enable caching for better performance
+cache_enabled: true
