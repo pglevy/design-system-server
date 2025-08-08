@@ -294,6 +294,83 @@ server.tool(
   },
 );
 
+// Tool 5: Get coding guidance
+server.tool(
+  "get-coding-guidance",
+  "Get coding guidance and best practices for specific technologies or frameworks",
+  {
+    technology: z.string().describe("Technology or framework (e.g., 'sail', 'html', 'css')").optional(),
+  },
+  async ({ technology }) => {
+    // If no technology specified, list available guides
+    if (!technology) {
+      const codingGuides = designSystemData['coding-guides'];
+      const guides = Object.entries(codingGuides).map(
+        ([key, guide]) => `${key}: ${guide.title} - ${guide.body}`
+      );
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Available coding guides:\n\n${guides.join("\n\n")}\n\nUse get-component-details with category 'coding-guides' to access specific guides.`,
+          },
+        ],
+      };
+    }
+    
+    // Look for technology-specific guide
+    const normalizedTech = technology.toLowerCase();
+    const codingGuides = designSystemData['coding-guides'];
+    
+    // Check if there's a direct match or partial match
+    let matchedGuide = null;
+    let matchedKey = null;
+    
+    for (const [key, guide] of Object.entries(codingGuides)) {
+      if (key.includes(normalizedTech) || guide.title.toLowerCase().includes(normalizedTech)) {
+        matchedGuide = guide;
+        matchedKey = key;
+        break;
+      }
+    }
+    
+    if (!matchedGuide) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No coding guide found for "${technology}". Available guides: ${Object.keys(codingGuides).join(", ")}`,
+          },
+        ],
+      };
+    }
+    
+    // Fetch the full guide content
+    const repoContent = await fetchRepoContent(matchedGuide.filePath);
+    
+    if (!repoContent) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Failed to fetch ${matchedGuide.title} guide. Basic info: ${matchedGuide.body}`,
+          },
+        ],
+      };
+    }
+    
+    return {
+      content: [
+        {
+          type: "text",
+          text: `# ${matchedGuide.title}\n\n${repoContent.content}`,
+        },
+      ],
+    };
+  },
+);
+
 // Start the server
 async function main() {
   const transport = new StdioServerTransport();

@@ -20,6 +20,7 @@ export interface DesignSystemData {
   layouts: DesignSystemCategory;
   patterns: DesignSystemCategory;
   components: DesignSystemCategory;
+  'coding-guides': DesignSystemCategory;
   [key: string]: DesignSystemCategory;
 }
 
@@ -238,6 +239,13 @@ export const designSystemData: DesignSystemData = {
       title: 'Tabs',
       body: 'Tabbed interface components for organizing content.',
       filePath: 'components/tabs.md'
+    }
+  },
+  'coding-guides': {
+    'sail-coding-guide': {
+      title: 'SAIL Coding Guide',
+      body: 'Comprehensive guide for generating valid Appian SAIL interfaces using documented components and best practices.',
+      filePath: 'SAIL_CODING_GUIDE.md'
     }
   }
 };
