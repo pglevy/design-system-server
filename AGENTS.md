@@ -73,6 +73,7 @@ GITHUB_REPO=repository_name
 2. **list-components**: List components within a specific category
 3. **get-component-details**: Get detailed information about a specific component
 4. **search-design-system**: Search across all documentation by keyword
+5. **get-coding-guidance**: Get coding guidance and best practices for specific technologies
 
 ### Integration Points
 
