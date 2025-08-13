@@ -13,153 +13,142 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 - Use our [issue templates](.github/ISSUE_TEMPLATE/) to report bugs or request features
 - Search existing issues before creating a new one
 - Provide clear, detailed descriptions with examples when possible
+- Include your environment details (Node.js version, MCP client, OS)
 
 ### Suggesting Enhancements
 
 - Open an issue using the feature request template
 - Explain the use case and expected behavior
-- Consider if the enhancement fits within the design system's scope
+- Consider how the enhancement would benefit MCP server functionality
+- Describe any new MCP tools or configuration options needed
 
-### Contributing Documentation
+### Contributing Code
 
-We welcome contributions to improve our design system documentation:
+We welcome contributions to improve the MCP server:
 
-- **Component documentation**: Add new components or improve existing ones
-- **Pattern documentation**: Document reusable design patterns
-- **Layout guidance**: Contribute page-level layout templates
-- **Accessibility improvements**: Enhance accessibility guidelines and examples
-- **Code examples**: Add or improve implementation examples
+- **Bug fixes**: Fix issues with existing MCP tools or server functionality
+- **New MCP tools**: Add new tools to extend server capabilities
+- **Performance improvements**: Optimize server response times or memory usage
+- **Documentation updates**: Improve setup guides, API docs, or examples
+- **Configuration enhancements**: Add new configuration options or improve existing ones
 
 ## Getting Started
 
-### For Designers
-
-1. **Edit directly in GitHub**: Use GitHub's web interface to edit markdown files
-2. **Create a branch**: Always work on a feature branch for changes
-3. **Request review**: Open a pull request when ready for feedback
-4. **Collaborate**: Use PR comments for discussion and iteration
-
-### For Developers
-
-1. **Fork the repository**: Click the "Fork" button on GitHub
-2. **Clone your fork**: `git clone https://github.com/YOUR-USERNAME/design-system-docs.git`
-3. **Create a feature branch**: `git checkout -b feature/your-feature-name`
-4. **Make changes**: Edit markdown files or add new documentation
-5. **Test locally**: Run `bundle exec jekyll serve` to preview changes
-6. **Submit PR**: Push changes and open a pull request for review
-
-## Workflow Conventions
-
-### Tracking Work
-
-- Check existing issues and projects before starting work
-- Create or assign issues to avoid overlap with other contributors
-- Use clear, descriptive commit messages
-
-### Doing Work
-
-- Favor use of the web editor for simple changes to keep things accessible
-- For larger changes, work locally and test with Jekyll
-- Paste or drag-and-drop images to leverage GitHub's `user-attachment` feature
-- Keep page hierarchy as flat as possible, but use logical structure as needed
-- For pages with an "Options" section, use the term "Variants" instead
-
-### Markdown Conventions
-
-- **Front Matter**: Delete "parent" and "related" elements if not needed for the file
-- Use double space between all elements (except lists)
-- Place images after heading and subheading and before paragraphs
-- Use empty alt text for component images: `![](image-url)`
-- Put inline functions in backticks (e.g., `a!localVariables`)
-- Use `1.` for all numbers in ordered lists (sequential numbers rendered automatically)
-- Use `<br>` to break lines within a paragraph
-- Format code samples properly before copying over
-
-### File Structure
-
-Follow our established file structure:
-
-```
-design-system-docs/
-├── components/         # Individual UI components
-├── patterns/          # Reusable design patterns
-├── layouts/           # Page-level layout templates
-├── branding/          # Brand identity elements
-├── accessibility/     # Accessibility guidelines
-└── content-style-guide/ # Content and writing guidelines
-```
-
-## Review Process
-
-### Submitting Pull Requests
-
-1. **Create a clear PR title**: Use descriptive titles that explain the change
-2. **Fill out the PR template**: Provide context and testing information
-3. **Request review**: Tag relevant reviewers or use auto-assignment
-4. **Respond to feedback**: Address comments and suggestions promptly
-5. **Keep PRs focused**: One feature or fix per PR when possible
-
-### Review Guidelines
-
-- Have at least one other person review your changes
-- Anyone with write access can merge when ready
-- Delete remote branches after merge
-
-## Local Development
-
 ### Prerequisites
 
-- Ruby (version specified in `.ruby-version`)
-- Bundler gem
+- Node.js (version 18 or higher)
+- npm or yarn
 - Git
+- An MCP client for testing (Claude Desktop, Amazon Q CLI, etc.)
 
-### Setup
+### Development Setup
 
-```bash
-# Clone the repository
-git clone https://github.com/pglevy/design-system-docs.git
-cd design-system-docs
+1. **Fork the repository**: Click the "Fork" button on GitHub
+2. **Clone your fork**: 
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/design-system-server.git
+   cd design-system-server
+   ```
+3. **Install dependencies**: 
+   ```bash
+   npm install
+   ```
+4. **Build the server**: 
+   ```bash
+   npm run build
+   ```
+5. **Test locally**: 
+   ```bash
+   npm start
+   ```
 
-# Install dependencies
-bundle install
+### Testing Your Changes
 
-# Serve the site locally
-bundle exec jekyll serve
+Before submitting a pull request:
 
-# View at http://localhost:4000
+1. **Build successfully**: Ensure `npm run build` completes without errors
+2. **Test with MCP client**: Configure the server in Claude Desktop or Amazon Q CLI
+3. **Verify MCP tools**: Test that all tools work as expected
+4. **Check error handling**: Test error scenarios and edge cases
+5. **Run existing tests**: If tests exist, ensure they pass
+
+### MCP Client Testing
+
+#### Claude Desktop
+1. Update your `claude_desktop_config.json` to point to your local build
+2. Restart Claude Desktop
+3. Test MCP tools in a conversation
+4. Verify error messages are helpful
+
+#### Amazon Q CLI
+1. Configure the server in your Q CLI setup
+2. Test MCP tools through the CLI
+3. Verify integration works correctly
+
+## Development Guidelines
+
+### Code Style
+
+- Follow existing code patterns and conventions
+- Use TypeScript for type safety
+- Add comments for complex logic
+- Keep functions focused and single-purpose
+
+### MCP Tool Development
+
+When adding new MCP tools:
+
+- Follow the MCP specification
+- Provide clear tool descriptions
+- Include proper parameter validation
+- Handle errors gracefully
+- Add appropriate logging
+
+### Configuration
+
+When adding configuration options:
+
+- Update the example configuration files
+- Document new options in README
+- Ensure backward compatibility
+- Provide sensible defaults
+
+## Pull Request Process
+
+1. **Create a feature branch**: `git checkout -b feature/your-feature-name`
+2. **Make your changes**: Follow the development guidelines above
+3. **Test thoroughly**: Ensure your changes work with MCP clients
+4. **Commit with clear messages**: Use descriptive commit messages
+5. **Push to your fork**: `git push origin feature/your-feature-name`
+6. **Open a pull request**: Use the PR template and provide context
+7. **Respond to feedback**: Address review comments promptly
+
+### PR Guidelines
+
+- Keep PRs focused on a single feature or fix
+- Fill out the PR template completely
+- Include testing information
+- Update documentation if needed
+- Ensure CI checks pass
+
+## Project Structure
+
+```
+design-system-server/
+├── src/                 # TypeScript source code
+├── build/              # Compiled JavaScript output
+├── docs/               # Documentation
+├── .github/            # GitHub templates and workflows
+├── package.json        # Dependencies and scripts
+├── tsconfig.json       # TypeScript configuration
+└── README.md           # Project overview
 ```
 
-### Testing Changes
+## Questions and Support
 
-- Always test your changes locally before submitting
-- Verify that all links work correctly
-- Check that images display properly
-- Ensure responsive design works across devices
+- Check our [README](README.md) for setup instructions
+- Search through [existing issues](https://github.com/pglevy/design-system-server/issues)
+- Start a [discussion](https://github.com/pglevy/design-system-server/discussions) for questions
+- Review the [MCP specification](https://modelcontextprotocol.io/docs) for technical details
 
-## Style Guidelines
-
-### Writing Style
-
-- Use clear, concise language
-- Write in active voice when possible
-- Use consistent terminology throughout
-- Include practical examples and use cases
-
-### Documentation Structure
-
-Each documentation page should include:
-
-- Clear title and description
-- Design guidelines and principles
-- Accessibility considerations
-- Implementation examples
-- Related components or patterns
-
-## Questions?
-
-- Check our [existing documentation](README.md)
-- Search through [existing issues](https://github.com/pglevy/design-system-docs/issues)
-- Start a [discussion](https://github.com/pglevy/design-system-docs/discussions) for questions
-- Reach out to maintainers for guidance
-
-Thank you for contributing to making our design system documentation better for everyone!
+Thank you for contributing to making the Design System MCP Server better for everyone!
