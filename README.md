@@ -1,6 +1,6 @@
 # Design System MCP Server
 
-This is a Model Context Protocol (MCP) server that provides access to design system documentation through GitHub repositories. It supports both public and internal documentation sources, allowing LLMs like Claude to query and explore design system components, layouts, and patterns with appropriate access controls.
+This is a Model Context Protocol (MCP) server that provides access to Appian's design system documentation through GitHub repositories. It supports both public and internal documentation sources, allowing LLMs like Claude to query and explore design system components, layouts, and patterns with appropriate access controls.
 
 ## Features
 
