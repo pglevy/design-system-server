@@ -163,14 +163,16 @@ server.tool(
   },
 );
 
-// Tool 4: List components in a category
+// Tool 4: List components in a category (enhanced with source filtering)
 server.tool(
   "list-components",
-  "List components in a specific category",
+  "List components in a specific category with source information",
   {
     category: z.string().describe("Design system category (components, layouts, patterns)"),
+    includeInternal: z.boolean().optional().describe("Include internal documentation components (default: false)"),
+    sourceOnly: z.enum(["public", "internal", "all"]).optional().describe("Filter by specific source"),
   },
-  async ({ category }) => {
+  async ({ category, includeInternal = false, sourceOnly }) => {
     const normalizedCategory = category.toLowerCase();
     
     if (!(normalizedCategory in designSystemData)) {
@@ -184,9 +186,47 @@ server.tool(
       };
     }
     
-    const items = Object.entries(designSystemData[normalizedCategory]).map(
-      ([key, value]) => `${key}: ${(value as DesignSystemItem).title} - ${(value as DesignSystemItem).body}`
-    );
+    const items = [];
+    const categoryData = designSystemData[normalizedCategory];
+    
+    for (const [key, component] of Object.entries(categoryData)) {
+      const item = component as DesignSystemItem;
+      
+      // Check if content exists and get source information
+      const sourcedContent = await sourceManager.getContent(item.filePath);
+      
+      if (!sourcedContent) {
+        continue; // Skip if content not available
+      }
+      
+      // Apply access control
+      if (sourcedContent.source === 'internal' && !includeInternal) {
+        continue; // Skip internal content when not requested
+      }
+      
+      // Apply source filtering
+      if (sourceOnly && sourceOnly !== 'all' && sourcedContent.source !== sourceOnly) {
+        continue; // Skip if doesn't match source filter
+      }
+      
+      // Add source attribution to the listing
+      const sourceLabel = sourcedContent.source.toUpperCase();
+      const overrideInfo = sourcedContent.overrides ? ` (overrides ${sourcedContent.overrides.toUpperCase()})` : '';
+      
+      items.push(`**${key}**: ${item.title} - ${item.body}\n  *Source: ${sourceLabel}${overrideInfo}*`);
+    }
+    
+    if (items.length === 0) {
+      const accessNote = !includeInternal ? " (use includeInternal=true to see internal components)" : "";
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No accessible components found in ${normalizedCategory}${accessNote}`,
+          },
+        ],
+      };
+    }
     
     return {
       content: [
@@ -255,7 +295,7 @@ server.tool(
     }
 
     // Apply source filtering
-    if (sourceOnly && sourcedContent.source !== sourceOnly) {
+    if (sourceOnly && sourceOnly !== 'all' && sourcedContent.source !== sourceOnly) {
       return {
         content: [
           {
@@ -351,7 +391,7 @@ server.tool(
           const sourcedContent = await sourceManager.getContent(component.filePath);
           
           // Apply source filtering
-          if (sourceOnly && sourcedContent?.source !== sourceOnly) {
+          if (sourceOnly && sourceOnly !== 'all' && sourcedContent?.source !== sourceOnly) {
             continue;
           }
           
