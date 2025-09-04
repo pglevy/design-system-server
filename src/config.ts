@@ -207,16 +207,25 @@ function mergeConfigs(base: Config, override: Partial<Config>): Config {
  * Apply environment variable overrides
  */
 function applyEnvironmentOverrides(config: Config): Config {
+  // Configure public repository from environment variables
+  const githubOwner = loadEnvVariable("GITHUB_OWNER");
+  const githubRepo = loadEnvVariable("GITHUB_REPO");
+  if (githubOwner && githubRepo) {
+    config.documentation.sources.public.repo = `https://github.com/${githubOwner}/${githubRepo}.git`;
+  }
+
   // Enable internal docs if environment variable is set
   if (loadEnvVariable("ENABLE_INTERNAL_DOCS") === "true") {
+    const internalOwner = loadEnvVariable("INTERNAL_GITHUB_OWNER") || githubOwner;
+    const internalRepo = loadEnvVariable("INTERNAL_GITHUB_REPO") || "design-system-docs-internal";
+    
     config.documentation.sources.internal = {
       enabled: true,
       path: "./docs-internal",
-      repo: "https://github.com/pglevy/design-system-docs-internal.git",
+      repo: `https://github.com/${internalOwner}/${internalRepo}.git`,
       branch: "main",
       priority: 2,
       auth_required: true,
-      submodule_path: "design-system-docs",
     };
   }
 
@@ -227,13 +236,6 @@ function applyEnvironmentOverrides(config: Config): Config {
     if (!isNaN(interval)) {
       config.refresh_interval = interval;
     }
-  }
-
-  // Backward compatibility: use existing GitHub env vars for public source
-  const githubOwner = loadEnvVariable("GITHUB_OWNER");
-  const githubRepo = loadEnvVariable("GITHUB_REPO");
-  if (githubOwner && githubRepo) {
-    config.documentation.sources.public.repo = `https://github.com/${githubOwner}/${githubRepo}.git`;
   }
 
   return config;
