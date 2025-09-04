@@ -60,7 +60,6 @@ For access to both public and internal documentation:
 3. Ensure your internal repository follows the same structure as the public one:
    - Place documentation files in a `/docs` folder
    - Use the same category structure (components, layouts, patterns, etc.)
-   ```
 
 ### Advanced Configuration
 
