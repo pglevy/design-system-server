@@ -43,16 +43,23 @@ For access to public design system documentation only:
 For access to both public and internal documentation:
 
 1. Follow the public documentation setup above
-2. Configure internal documentation access:
+2. Configure internal documentation access in your `.env` file:
    ```bash
-   # Add to your .env file
-   export ENABLE_INTERNAL_DOCS=true
-   export INTERNAL_DOCS_TOKEN=your_github_token_for_private_repo
+   # Enable internal documentation
+   ENABLE_INTERNAL_DOCS=true
+   
+   # GitHub token for internal repository (must have access to private repo)
+   INTERNAL_DOCS_TOKEN=your_github_token_for_private_repo
+   
+   # Optional: Internal repository owner (defaults to GITHUB_OWNER)
+   INTERNAL_GITHUB_OWNER=your_internal_repo_owner
+   
+   # Optional: Internal repository name (defaults to design-system-docs-internal)
+   INTERNAL_GITHUB_REPO=your_internal_repo_name
    ```
-3. Optionally, create a `config.yml` file for advanced configuration:
-   ```bash
-   cp config.example.yml config.yml
-   # Edit config.yml to customize source settings
+3. Ensure your internal repository follows the same structure as the public one:
+   - Place documentation files in a `/docs` folder
+   - Use the same category structure (components, layouts, patterns, etc.)
    ```
 
 ### Advanced Configuration
