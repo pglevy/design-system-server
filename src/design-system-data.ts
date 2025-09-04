@@ -44,7 +44,7 @@ function loadEnvVariable(variableName: string): string {
       const match = envContent.match(regex);
       if (match) {
         const value = match[1].trim();
-        if (variableName === 'GITHUB_TOKEN') {
+        if (variableName === 'GITHUB_TOKEN' || variableName === 'INTERNAL_DOCS_TOKEN') {
           console.error(`[DEBUG] ${variableName} loaded from .env: ${value.substring(0, 20)}...`);
         } else {
           console.error(`[DEBUG] ${variableName} loaded from .env: ${value}`);
@@ -58,7 +58,7 @@ function loadEnvVariable(variableName: string): string {
   
   // Fall back to environment variable
   const envValue = process.env[variableName] || '';
-  if (variableName === 'GITHUB_TOKEN') {
+  if (variableName === 'GITHUB_TOKEN' || variableName === 'INTERNAL_DOCS_TOKEN') {
     console.error(`[DEBUG] Using environment ${variableName}: ${envValue ? envValue.substring(0, 20) + '...' : 'EMPTY'}`);
   } else {
     console.error(`[DEBUG] Using environment ${variableName}: ${envValue || 'EMPTY'}`);
@@ -66,19 +66,29 @@ function loadEnvVariable(variableName: string): string {
   return envValue;
 }
 
-// GitHub repository configuration
+// GitHub repository configuration (legacy - maintained for backward compatibility)
 export const GITHUB_CONFIG = {
   owner: loadEnvVariable('GITHUB_OWNER'),
   repo: loadEnvVariable('GITHUB_REPO'),
   token: loadEnvVariable('GITHUB_TOKEN')
 };
 
-// Internal documentation configuration
-export const INTERNAL_DOCS_CONFIG = {
-  enabled: loadEnvVariable('ENABLE_INTERNAL_DOCS').toLowerCase() === 'true',
-  owner: loadEnvVariable('INTERNAL_GITHUB_OWNER') || loadEnvVariable('GITHUB_OWNER'),
-  repo: loadEnvVariable('INTERNAL_GITHUB_REPO') || 'design-system-docs-internal',
-  token: loadEnvVariable('INTERNAL_DOCS_TOKEN')
+// Dual-source configuration for the new source manager
+export const DUAL_SOURCE_CONFIG = {
+  public: {
+    enabled: true,
+    owner: loadEnvVariable('GITHUB_OWNER'),
+    repo: loadEnvVariable('GITHUB_REPO'),
+    token: loadEnvVariable('GITHUB_TOKEN'),
+    priority: 1
+  },
+  internal: {
+    enabled: loadEnvVariable('ENABLE_INTERNAL_DOCS').toLowerCase() === 'true',
+    owner: loadEnvVariable('INTERNAL_GITHUB_OWNER') || loadEnvVariable('GITHUB_OWNER'),
+    repo: loadEnvVariable('INTERNAL_GITHUB_REPO') || 'design-system-docs-internal',
+    token: loadEnvVariable('INTERNAL_DOCS_TOKEN'),
+    priority: 2
+  }
 };
 
 // Validate configuration
@@ -86,19 +96,19 @@ export function validateConfiguration(): { isValid: boolean; errors: string[] } 
   const errors: string[] = [];
   
   // Validate public repository configuration
-  if (!GITHUB_CONFIG.owner) errors.push('GITHUB_OWNER is required');
-  if (!GITHUB_CONFIG.repo) errors.push('GITHUB_REPO is required');
-  if (!GITHUB_CONFIG.token) errors.push('GITHUB_TOKEN is required');
+  if (!DUAL_SOURCE_CONFIG.public.owner) errors.push('GITHUB_OWNER is required');
+  if (!DUAL_SOURCE_CONFIG.public.repo) errors.push('GITHUB_REPO is required');
+  if (!DUAL_SOURCE_CONFIG.public.token) errors.push('GITHUB_TOKEN is required');
   
   // Validate internal repository configuration if enabled
-  if (INTERNAL_DOCS_CONFIG.enabled) {
-    if (!INTERNAL_DOCS_CONFIG.token) {
+  if (DUAL_SOURCE_CONFIG.internal.enabled) {
+    if (!DUAL_SOURCE_CONFIG.internal.token) {
       errors.push('INTERNAL_DOCS_TOKEN is required when ENABLE_INTERNAL_DOCS=true');
     }
-    if (!INTERNAL_DOCS_CONFIG.owner) {
+    if (!DUAL_SOURCE_CONFIG.internal.owner) {
       errors.push('INTERNAL_GITHUB_OWNER is required when ENABLE_INTERNAL_DOCS=true');
     }
-    if (!INTERNAL_DOCS_CONFIG.repo) {
+    if (!DUAL_SOURCE_CONFIG.internal.repo) {
       errors.push('INTERNAL_GITHUB_REPO is required when ENABLE_INTERNAL_DOCS=true');
     }
   }
@@ -295,9 +305,9 @@ if (!configValidation.isValid) {
 }
 
 // Log configuration status
-console.error(`[INFO] Public repository: ${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}`);
-if (INTERNAL_DOCS_CONFIG.enabled) {
-  console.error(`[INFO] Internal repository: ${INTERNAL_DOCS_CONFIG.owner}/${INTERNAL_DOCS_CONFIG.repo}`);
+console.error(`[INFO] Public repository: ${DUAL_SOURCE_CONFIG.public.owner}/${DUAL_SOURCE_CONFIG.public.repo}`);
+if (DUAL_SOURCE_CONFIG.internal.enabled) {
+  console.error(`[INFO] Internal repository: ${DUAL_SOURCE_CONFIG.internal.owner}/${DUAL_SOURCE_CONFIG.internal.repo}`);
 } else {
   console.error('[INFO] Internal documentation: disabled');
 }
