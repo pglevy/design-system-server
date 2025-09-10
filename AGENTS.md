@@ -77,7 +77,7 @@ GITHUB_REPO=repository_name
 
 ### Integration Points
 
-- **GitHub Repository**: [design-system-docs](https://github.com/pglevy/design-system-docs) - Source of truth for all documentation
+- **GitHub Repository**: [design-system-docs](https://github.com/appian-design/aurora) - Source of truth for all documentation
 - **AI Assistants**: Provides real-time access to design system guidance during development
 - **Development Workflow**: Enables contextual design system assistance within coding environments
 

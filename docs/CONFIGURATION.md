@@ -14,14 +14,14 @@ documentation:
     public:
       enabled: true
       path: "./docs-public"
-      repo: "https://github.com/pglevy/design-system-docs.git"
+      repo: "https://github.com/appian-design/aurora.git"
       branch: "main"
       priority: 1
       auth_required: false
     internal:
       enabled: false
       path: "./docs-internal"
-      repo: "https://github.com/pglevy/design-system-docs-internal.git"
+      repo: "https://github.com/appian-design/aurora-internal.git"
       branch: "main"
       priority: 2
       auth_required: true
@@ -97,7 +97,7 @@ documentation:
   sources:
     public:
       enabled: true
-      repo: "https://github.com/pglevy/design-system-docs.git"
+      repo: "https://github.com/appian-design/aurora.git"
 ```
 
 ### Dual Sources
@@ -107,11 +107,11 @@ documentation:
   sources:
     public:
       enabled: true
-      repo: "https://github.com/pglevy/design-system-docs.git"
+      repo: "https://github.com/appian-design/aurora.git"
       priority: 1
     internal:
       enabled: true
-      repo: "https://github.com/pglevy/design-system-docs-internal.git"
+      repo: "https://github.com/appian-design/aurora-internal.git"
       priority: 2
       auth_required: true
 ```
