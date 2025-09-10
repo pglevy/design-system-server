@@ -24,7 +24,7 @@ Migrate the Design System MCP Server from fetching content via GitHub Gists API 
 ## Migration Requirements
 
 1. **Content Structure:** Combine guidance and code into single markdown files using frontmatter template
-2. **Repository:** Migrate to private repo `https://github.com/pglevy/design-system-docs`
+2. **Repository:** Migrate to private repo `https://github.com/appian-design/aurora`
 3. **Navigation:** Expand to full 6-category structure from `nav.md`
 4. **Authentication:** Use Personal Access Token for private repo access
 

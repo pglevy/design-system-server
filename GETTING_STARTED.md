@@ -69,7 +69,7 @@ The MCP server needs API access to GitHub to fetch the design system documentati
 
 At a high level, here's what you need to do:
 
-- Fork the [design-system-docs](https://github.com/pglevy/design-system-docs) repo (*not* the design-system-server repo this file is in) to your account (i.e., `yourname/design-system-docs`)
+- Fork the [design-system-docs](https://github.com/appian-design/aurora) repo (*not* the design-system-server repo this file is in) to your account (i.e., `yourname/design-system-docs`)
 - Create a Personal Access Token (PAT) to allow API access to your forked repo
 - Copy the PAT to your local copy of the `design-system-server` repo
 
@@ -81,7 +81,7 @@ If you need access to internal documentation, you'll also need:
 - Additional environment configuration
 
 
-1. **Fork the [design-system-docs](https://github.com/pglevy/design-system-docs) repo**
+1. **Fork the [design-system-docs](https://github.com/appian-design/aurora) repo**
    - Use the Fork button at the top of repo page
      - It will be created as a private repo in your account because the parent repo is private (for now)
 
@@ -178,7 +178,7 @@ Now that the MCP server is configured, you'll want to create a separate workspac
    - Select your new working project folder
    - This gives you a clean workspace for your design system files
 
-1. **Download or copy [CLAUDE.md](https://github.com/pglevy/design-system-docs/blob/main/CLAUDE.md) from `design-system-docs`**
+1. **Download or copy [CLAUDE.md](https://github.com/appian-design/aurora/blob/main/CLAUDE.md) from `design-system-docs`**
    - Put this file in your project folder (it provides some "tips and tricks" for Q to avoid silly SAIL mistakes)
 
 1. **Understanding the workflow:**
@@ -252,7 +252,7 @@ Example queries:
 
 ## Step 9: Leave Feedback
 
-Run into a problem or have an idea for improvement? [Open an issue in `design-system-docs` using the Feedback template](https://github.com/pglevy/design-system-docs/issues/new?template=beta-feedback.md)
+Run into a problem or have an idea for improvement? [Open an issue in `design-system-docs` using the Feedback template](https://github.com/appian-design/aurora/issues/new?template=beta-feedback.md)
 
 ## Troubleshooting
 

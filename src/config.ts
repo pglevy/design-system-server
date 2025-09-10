@@ -35,7 +35,7 @@ const DEFAULT_CONFIG: Config = {
       public: {
         enabled: true,
         path: "./docs-public",
-        repo: "https://github.com/pglevy/design-system-docs.git",
+        repo: "https://github.com/appian-design/aurora.git",
         branch: "main",
         priority: 1,
         auth_required: false,

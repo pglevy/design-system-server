@@ -147,8 +147,8 @@ design-system-server/
 ## Questions and Support
 
 - Check our [README](README.md) for setup instructions
-- Search through [existing issues](https://github.com/pglevy/design-system-server/issues)
-- Start a [discussion](https://github.com/pglevy/design-system-server/discussions) for questions
+- Search through [existing issues](https://github.com/appian-design/aurora-mcp/issues)
+- Start a [discussion](https://github.com/appian-design/aurora-mcp/discussions) for questions
 - Review the [MCP specification](https://modelcontextprotocol.io/docs) for technical details
 
 Thank you for contributing to making the Design System MCP Server better for everyone!

@@ -41,7 +41,7 @@ documentation:
   sources:
     public:
       enabled: true
-      repo: "https://github.com/pglevy/design-system-docs.git"
+      repo: "https://github.com/appian-design/aurora.git"
       priority: 1
 ```
 
@@ -66,11 +66,11 @@ documentation:
   sources:
     public:
       enabled: true
-      repo: "https://github.com/pglevy/design-system-docs.git"
+      repo: "https://github.com/appian-design/aurora.git"
       priority: 1
     internal:
       enabled: true
-      repo: "https://github.com/pglevy/design-system-docs-internal.git"
+      repo: "https://github.com/appian-design/aurora-internal.git"
       priority: 2
       auth_required: true
       submodule_path: "design-system-docs"
