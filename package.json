@@ -1,5 +1,5 @@
 {
-  "name": "design-system-mcp-server",
+  "name": "aurora-mcp-server",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
