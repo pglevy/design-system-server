@@ -98,6 +98,24 @@ const server = new McpServer({
 // Initialize source manager
 const sourceManager = new SourceManager();
 
+// Helper function to get SAIL guidance
+async function getSailGuidance(): Promise<string> {
+  const codingGuides = designSystemData['coding-guides'];
+  const sailGuide = codingGuides['sail'];
+  
+  if (!sailGuide) {
+    return "SAIL guidance not available.";
+  }
+  
+  const sourcedContent = await sourceManager.getContent(sailGuide.filePath);
+  
+  if (!sourcedContent) {
+    return "SAIL guidance could not be loaded.";
+  }
+  
+  return sourcedContent.content;
+}
+
 // Tool 1: Get content sources status
 server.tool(
   "get-content-sources",
@@ -239,7 +257,7 @@ server.tool(
   },
 );
 
-// Tool 5: Get detailed component information (enhanced with source attribution)
+// Tool 7: Get SAIL guidance
 server.tool(
   "get-component-details",
   "Get detailed information about a specific component with source attribution",
@@ -248,8 +266,9 @@ server.tool(
     componentName: z.string().describe("Name of the component, layout, or pattern"),
     includeInternal: z.boolean().optional().describe("Include internal documentation if available (default: false)"),
     sourceOnly: z.enum(["public", "internal", "all"]).optional().describe("Filter by specific source"),
+    includeSailGuidance: z.boolean().optional().describe("Include SAIL coding guidance (default: true for components/patterns/layouts)"),
   },
-  async ({ category, componentName, includeInternal = false, sourceOnly }) => {
+  async ({ category, componentName, includeInternal = false, sourceOnly, includeSailGuidance }) => {
     const normalizedCategory = category.toLowerCase();
     const normalizedComponentName = componentName.toLowerCase();
     
@@ -354,6 +373,15 @@ server.tool(
       response += `## Content\n\n${sourcedContent.content}`;
     }
     
+    // Auto-include SAIL guidance for relevant categories
+    const shouldIncludeSail = includeSailGuidance !== false && 
+      ['components', 'patterns', 'layouts'].includes(normalizedCategory);
+    
+    if (shouldIncludeSail) {
+      const sailGuidance = await getSailGuidance();
+      response += `\n\n---\n\n## SAIL Coding Guidance\n\n${sailGuidance}`;
+    }
+    
     console.error(`[DEBUG] Final response size: ${response.length} characters for ${component.title} from ${sourcedContent.source}`);
     
     return {
@@ -442,10 +470,10 @@ server.tool(
   },
 );
 
-// Tool 5: Get coding guidance
+// Tool 7: Get SAIL guidance
 server.tool(
-  "get-coding-guidance",
-  "Get coding guidance and best practices for specific technologies or frameworks",
+  "get-sail-guidance",
+  "Get SAIL coding guidance and best practices",
   {
     technology: z.string().describe("Technology or framework (e.g., 'sail', 'html', 'css')").optional(),
   },
