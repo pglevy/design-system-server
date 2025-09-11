@@ -360,7 +360,7 @@ Once set up, you can use Amazon Q to explore your design system by asking natura
            "design-system": {
                "command": "node",
                "args": [
-                   "/ABSOLUTE/PATH/TO/aurora/build/index.js"
+                   "/ABSOLUTE/PATH/TO/aurora-mcp/build/index.js"
                ]
            }
        }
