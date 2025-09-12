@@ -73,7 +73,7 @@ function loadEnvVariable(variableName: string): string {
   for (const envPath of possiblePaths) {
     try {
       const envContent = readFileSync(envPath, "utf8");
-      const regex = new RegExp(`${variableName}=(.+)`);
+      const regex = new RegExp(`^${variableName}=(.+)`, 'm');
       const match = envContent.match(regex);
       if (match) {
         return match[1].trim();
