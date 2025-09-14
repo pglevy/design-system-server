@@ -210,8 +210,15 @@ function applyEnvironmentOverrides(config: Config): Config {
   // Configure public repository from environment variables
   const githubOwner = loadEnvVariable("GITHUB_OWNER");
   const githubRepo = loadEnvVariable("GITHUB_REPO");
+  const githubToken = loadEnvVariable("GITHUB_TOKEN");
+  
   if (githubOwner && githubRepo) {
     config.documentation.sources.public.repo = `https://github.com/${githubOwner}/${githubRepo}.git`;
+  }
+  
+  // Enable authentication for public source if token is available (to avoid rate limits)
+  if (githubToken) {
+    config.documentation.sources.public.auth_required = true;
   }
 
   // Enable internal docs if environment variable is set
