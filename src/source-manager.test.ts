@@ -79,27 +79,27 @@ await test('getContent handles missing files gracefully', async () => {
   }
 })();
 
-// Test 5: Source manager with internal docs enabled (skipped - requires INTERNAL_DOCS_TOKEN)
-/*
-await test('SourceManager works with internal docs enabled', () => {
-  // Temporarily enable internal docs
-  process.env.ENABLE_INTERNAL_DOCS = 'true';
-  
-  const sourceManager = new SourceManager();
-  const status = sourceManager.getSourceStatus();
-  
-  const internalSource = status.find(s => s.name === 'internal');
-  if (!internalSource) {
-    throw new Error('Internal source should be configured when enabled');
-  }
-  
-  if (internalSource.priority <= 1) {
-    throw new Error('Internal source should have higher priority than public');
-  }
-  
-  // Clean up
-  delete process.env.ENABLE_INTERNAL_DOCS;
-})();
-*/
+// Test 5: Source manager with internal docs enabled
+if (process.env.INTERNAL_DOCS_TOKEN) {
+  await test('SourceManager works with internal docs enabled', () => {
+    process.env.ENABLE_INTERNAL_DOCS = 'true';
+    
+    const sourceManager = new SourceManager();
+    const status = sourceManager.getSourceStatus();
+    
+    const internalSource = status.find(s => s.name === 'internal');
+    if (!internalSource) {
+      throw new Error('Internal source should be configured when enabled');
+    }
+    
+    if (internalSource.priority <= 1) {
+      throw new Error('Internal source should have higher priority than public');
+    }
+    
+    delete process.env.ENABLE_INTERNAL_DOCS;
+  })();
+} else {
+  console.log('⏭️  Skipping internal docs test (INTERNAL_DOCS_TOKEN not set)');
+}
 
 console.log('\nSource manager tests completed!');
