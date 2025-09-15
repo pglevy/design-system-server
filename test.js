@@ -32,7 +32,7 @@ function loadEnv() {
 async function testGitHubAPI() {
   console.log('1. Testing GitHub API connectivity...');
   
-  const url = `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/components/breadcrumbs.md`;
+  const url = `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/docs/components/breadcrumbs.md`;
   
   try {
     const response = await fetch(url, {
