@@ -382,8 +382,6 @@ server.tool(
       response += `\n\n---\n\n## SAIL Coding Guidance\n\n${sailGuidance}`;
     }
     
-    console.error(`[DEBUG] Final response size: ${response.length} characters for ${component.title} from ${sourcedContent.source}`);
-    
     return {
       content: [
         {

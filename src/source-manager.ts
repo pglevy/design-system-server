@@ -137,7 +137,7 @@ export class SourceManager {
     try {
       // For now, use GitHub API (in future this could support local files, git clones, etc.)
       const repoUrl = source.repo;
-      const match = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)(?:\.git)?/);
+      const match = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+?)(?:\.git)?$/);
       
       if (!match) {
         throw new Error(`Invalid GitHub repository URL: ${repoUrl}`);
@@ -153,7 +153,7 @@ export class SourceManager {
 
       const token = getAuthToken(source);
       if (token) {
-        headers['Authorization'] = `token ${token}`;
+        headers['Authorization'] = `Bearer ${token}`;
       }
 
       const response = await fetch(url, { headers });
