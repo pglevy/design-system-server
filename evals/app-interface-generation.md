@@ -1,4 +1,4 @@
-# Evaluation Plan: Generating SAIL interfaces
+# Evaluation Plan: Generating SAIL interfaces for apps
 
 ## Overview
 
@@ -19,22 +19,15 @@ Test MCP server performance by requesting generation of a pre-determined set up 
    - Component composition complexity
    - Comparison to reference examples
 
-### Test Data
+## Prompt Template
 
-Run this consolidated prompt:
+- Run the following prompt for each test case
+- Run them in the same session if possible
 
 ```
 ## Goal
 
-Generate high-quality, professional-level interfaces using Appian SAIL
-
-## Steps
-
-1. Review the business context
-1. Use the design system MCP to generate an interface for each test case
-1. When calling the MCP, start at the high level and work down based on what is needed for a given interface: layouts, patterns, then components
-1. After thinking about how to generate each interface, review the sail-coding-guidance and accessibility checklist to avoid basic errors
-1. Generate each interface in a separate .txt file
+Generate a high-quality, professional-level interface using Appian SAIL for the given test case
 
 ## Business Context
 
@@ -45,6 +38,19 @@ Generate high-quality, professional-level interfaces using Appian SAIL
 - **Carlos Martinez (New Member):** Small business owner needing quick account opening, limited time during business hours
 - **Maria Chen (Member Services Rep):** Processes 15-20 applications daily, needs visibility into completion status and compliance requirements
 - **Robert Kim (Compliance Officer):** BSA/AML specialist ensuring regulatory compliance, needs audit trails and risk screening
+
+## Specific Test Case
+[Single test case details]
+
+## Design System MCP Usage and Outputs
+
+- Use the design system MCP to generate an interface for each test case
+- When calling the MCP, start at the high level and work down based on what is needed for a given interface: layouts, patterns, then components
+- After thinking about how to generate each interface, review the sail-coding-guidance and accessibility checklist to avoid basic errors
+- IMPORTANT: Only use SAIL functions and syntax that are represented in the design system; don't make assumptions
+- Generate each interface in a separate .txt file
+- Don't include comments in the output file unless absolutely necessary
+```
 
 ## Test Cases
 
@@ -72,7 +78,6 @@ Generate high-quality, professional-level interfaces using Appian SAIL
 - **User Story:** As a member services rep, I want to track all communication with a member about their application, so that any team member can provide consistent service.
 - **Sample Data:** Timeline of interactions, phone notes, email correspondence, document requests, member responses, internal comments
 - **Expected Enhancement:** patterns/comment-thread + professional user experience patterns
-```
 
 ## Evaluation Criteria 
 
